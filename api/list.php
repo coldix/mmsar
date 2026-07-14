@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $dataFile = dirname(__DIR__) . '/data/submissions.json';
 
 $labels = [
-    'support'    => 'Wants local management',
-    'volunteer'  => 'Offers to help',
+    'support'    => 'Supports local management',
+    'volunteer'  => 'Supports local + offers to help',
     'informed'   => 'Stay informed',
     'status_quo' => 'Fine with how it is run now',
 ];

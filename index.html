@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body class="dark">
 
@@ -274,15 +274,15 @@
               <label class="intent-option">
                 <input type="radio" name="Intent" id="intent-support" value="support" checked>
                 <span>
-                  <strong>Support local management</strong>
+                  <strong>I support local management</strong>
                   <em>I want MSAR assets managed here, under a local unit</em>
                 </span>
               </label>
               <label class="intent-option">
                 <input type="radio" name="Intent" id="intent-volunteer" value="volunteer">
                 <span>
-                  <strong>Offer to help</strong>
-                  <em>Crew, skipper, radio, shore support — when the time comes</em>
+                  <strong>I support local management and offer to help</strong>
+                  <em>Yes to local control — and I may help as crew, skipper, radio, or shore support</em>
                 </span>
               </label>
               <label class="intent-option">
@@ -302,7 +302,7 @@
             </fieldset>
 
             <div id="volunteer-extra" class="volunteer-extra hidden-section">
-              <p class="form-hint">Optional — tick any roles you might help with later:</p>
+              <p class="form-hint">Optional — how you might help later:</p>
               <div class="role-chips">
                 <label class="chip"><input type="checkbox" id="Crew" name="Crew" value="1"> Crew</label>
                 <label class="chip"><input type="checkbox" id="Skipper" name="Skipper" value="1"> Skipper / coxswain</label>
@@ -411,7 +411,7 @@
         <div class="voices-filters" id="voices-filters" role="tablist">
           <button type="button" class="voices-filter is-active" data-filter="all">All</button>
           <button type="button" class="voices-filter" data-filter="support">Local management</button>
-          <button type="button" class="voices-filter" data-filter="volunteer">Offers to help</button>
+          <button type="button" class="voices-filter" data-filter="volunteer">Local + help</button>
           <button type="button" class="voices-filter" data-filter="status_quo">Fine as-is</button>
           <button type="button" class="voices-filter" data-filter="informed">Undecided</button>
         </div>
@@ -575,6 +575,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=11"></script>
+  <script src="main.js?v=12"></script>
 </body>
 </html>

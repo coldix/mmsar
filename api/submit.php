@@ -255,8 +255,8 @@ fclose($fp);
 
 // ─── Email notification ───────────────────────────────────
 $intentLabel = [
-    'support'    => 'Support local management',
-    'volunteer'  => 'Offer to help (volunteer)',
+    'support'    => 'Supports local management',
+    'volunteer'  => 'Supports local management and offers to help',
     'informed'   => 'Stay informed',
     'status_quo' => 'Fine with how it is run now',
 ][$intent] ?? $intent;
