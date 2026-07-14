@@ -1,0 +1,24 @@
+# MMSAR — single preferred origin: https://mmsar.au/
+# Stops duplicate indexing of www + mmsar.org.au (same content)
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # www.mmsar.au, mmsar.org.au, www.mmsar.org.au → https://mmsar.au/
+  RewriteCond %{HTTP_HOST} ^(www\.)?mmsar\.org\.au$ [NC,OR]
+  RewriteCond %{HTTP_HOST} ^www\.mmsar\.au$ [NC]
+  RewriteRule ^ https://mmsar.au%{REQUEST_URI} [L,R=301]
+
+  # http://mmsar.au → https://mmsar.au (if edge does not already)
+  RewriteCond %{HTTP_HOST} ^mmsar\.au$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://mmsar.au%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+Options -Indexes
