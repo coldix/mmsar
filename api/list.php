@@ -59,9 +59,10 @@ foreach ($list as $row) {
         continue;
     }
 
-    $name = trim((string) ($row['name'] ?? ''));
-    if ($name === '') {
-        $name = 'Local resident';
+    // Public display is Alias only (never email)
+    $alias = trim((string) ($row['alias'] ?? $row['name'] ?? ''));
+    if ($alias === '' || str_contains($alias, '@')) {
+        $alias = 'Local resident';
     }
 
     $counts['public']++;
@@ -82,7 +83,8 @@ foreach ($list as $row) {
     }
 
     $entries[] = [
-        'name'         => $name,
+        'alias'        => $alias,
+        'name'         => $alias, // backward compatible for front end
         'intent'       => $intent,
         'intent_label' => $labels[$intent] ?? $intent,
         'roles'        => $roles,

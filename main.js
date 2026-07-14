@@ -87,29 +87,71 @@
     });
   }
 
+  function isValidEmail(value) {
+    // Practical client check; server re-validates
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value).trim());
+  }
+
+  // If they try to leave the public list, keep them on it and explain Alias
+  const publicEl = document.getElementById("Public");
+  if (publicEl) {
+    publicEl.addEventListener("click", function (e) {
+      if (publicEl.checked) return; // allowing check is fine
+      // They are unchecking
+      e.preventDefault();
+      publicEl.checked = true;
+      const aliasEl = document.getElementById("Alias");
+      window.alert(
+        "Please stay on the public list using an Alias.\n\n" +
+          "• The public list only shows your Alias and position\n" +
+          "• Your email is never published\n" +
+          "• You may be emailed by the project, but the email list is not released to anyone\n\n" +
+          "Tip: enter something like “Sam M” or “Local coxswain” as your Alias."
+      );
+      if (aliasEl) {
+        aliasEl.focus();
+        if (!aliasEl.value.trim()) {
+          aliasEl.placeholder = "e.g. Sam M — protects your privacy";
+        }
+      }
+    });
+    // Also catch change via keyboard
+    publicEl.addEventListener("change", function () {
+      if (!publicEl.checked) {
+        publicEl.checked = true;
+      }
+    });
+  }
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
       const emailEl = document.getElementById("Email");
-      const nameEl = document.getElementById("Name");
+      const aliasEl = document.getElementById("Alias");
       const commentsEl = document.getElementById("Comments");
       const otherEl = document.getElementById("Other");
-      const publicEl = document.getElementById("Public");
 
-      const name = nameEl ? nameEl.value.trim() : "";
-      const email = emailEl ? emailEl.value.trim() : "";
-      const isPublic = !publicEl || publicEl.checked;
+      const alias = aliasEl ? aliasEl.value.trim() : "";
+      const email = emailEl ? emailEl.value.trim().toLowerCase() : "";
 
-      if (!name) {
+      if (!alias) {
         feedbackDiv.textContent =
-          "Please enter a name or alias for the public list.";
+          "Please enter an Alias for the public list (protects your privacy).";
         feedbackDiv.className = "error";
-        nameEl && nameEl.focus();
+        aliasEl && aliasEl.focus();
         return;
       }
-      if (!email) {
-        feedbackDiv.textContent = "Please enter your email (kept private).";
+      if (alias.indexOf("@") !== -1) {
+        feedbackDiv.textContent =
+          "Use an Alias for the public list — not your email address.";
+        feedbackDiv.className = "error";
+        aliasEl && aliasEl.focus();
+        return;
+      }
+      if (!email || !isValidEmail(email)) {
+        feedbackDiv.textContent =
+          "Please enter a valid email address (kept private, one entry per email).";
         feedbackDiv.className = "error";
         emailEl && emailEl.focus();
         return;
@@ -122,10 +164,11 @@
       });
 
       const payload = {
-        name: name,
+        alias: alias,
+        name: alias,
         email: email,
         intent: selectedIntent(),
-        public: isPublic,
+        public: true,
         roles: roles,
         other: otherEl ? otherEl.value.trim() : "",
         comments: commentsEl ? commentsEl.value.trim() : "",
@@ -168,10 +211,8 @@
 
           feedbackDiv.innerHTML =
             "<strong>Thank you — recorded.</strong><br>" +
-            (isPublic
-              ? "Your name is on the public list below."
-              : "Private record only (not on the public list).") +
-            " Share the winter push if you can.";
+            "Your <em>Alias</em> is on the public list. Email stays private and is not released. " +
+            "Share the winter push if you can.";
           feedbackDiv.className = "success";
 
           loadVoices();
@@ -246,7 +287,7 @@
     rows.forEach(function (e, i) {
       var row = nodes[i];
       if (!row) return;
-      row.querySelector(".voice-name").textContent = e.name;
+      row.querySelector(".voice-name").textContent = e.alias || e.name;
       row.querySelector(".voice-badge").textContent = e.intent_label;
       var roles =
         e.roles && e.roles.length ? "Roles: " + e.roles.join(", ") + " · " : "";

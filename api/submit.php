@@ -69,29 +69,39 @@ function s(mixed $v, int $max = 500): string {
     return $t;
 }
 
-$email = filter_var(s($in['email'] ?? $in['Email'] ?? '', 200), FILTER_VALIDATE_EMAIL);
+$emailRaw = strtolower(s($in['email'] ?? $in['Email'] ?? '', 200));
+$email = filter_var($emailRaw, FILTER_VALIDATE_EMAIL);
 if ($email === false) {
     http_response_code(400);
-    echo json_encode(['result' => 'error', 'message' => 'A valid email is required.']);
+    echo json_encode(['result' => 'error', 'message' => 'Please enter a valid email address.']);
+    exit;
+}
+// Normalise for uniqueness (case-insensitive)
+$email = strtolower($email);
+
+// Public list shows Alias only (not real legal name). Accept alias or name.
+$alias = s($in['alias'] ?? $in['Alias'] ?? $in['name'] ?? $in['Name'] ?? '', 80);
+if ($alias === '') {
+    http_response_code(400);
+    echo json_encode(['result' => 'error', 'message' => 'Please enter an Alias for the public list (protects your privacy).']);
+    exit;
+}
+// Block obvious full-email-as-alias
+if (str_contains($alias, '@')) {
+    http_response_code(400);
+    echo json_encode(['result' => 'error', 'message' => 'Use an Alias for the public list — not your email address.']);
     exit;
 }
 
-$name = s($in['name'] ?? $in['Name'] ?? '', 120);
 $intent = s($in['intent'] ?? $in['Intent'] ?? 'support', 40);
 $allowedIntents = ['support', 'volunteer', 'informed', 'status_quo'];
 if (!in_array($intent, $allowedIntents, true)) {
     $intent = 'support';
 }
 
-// Public list is default; emails always stay private
-$publicRaw = $in['public'] ?? $in['Public'] ?? true;
-$public = !($publicRaw === false || $publicRaw === '0' || $publicRaw === 0 || $publicRaw === 'false' || $publicRaw === 'off');
-
-if ($public && $name === '') {
-    http_response_code(400);
-    echo json_encode(['result' => 'error', 'message' => 'A name (or first name / alias) is required for the public list.']);
-    exit;
-}
+// Always public as Alias — emails never published, contact list not released
+$public = true;
+$name = $alias;
 
 $roles = [];
 $roleKeys = ['crew' => 'Crew', 'skipper' => 'Skipper', 'radio' => 'Radio', 'admin' => 'Admin', 'general' => 'General',
@@ -119,10 +129,11 @@ $comments = s($in['comments'] ?? $in['Comments'] ?? '', 2000);
 $record = [
     'id'          => bin2hex(random_bytes(8)),
     'received_at' => gmdate('c'),
-    'name'        => $name,
+    'alias'       => $alias,
+    'name'        => $name, // same as alias — public display only
     'email'       => $email,
     'intent'      => $intent,
-    'public'      => $public,
+    'public'      => true,
     'roles'       => $roles,
     'other'       => $other,
     'comments'    => $comments,
@@ -149,7 +160,7 @@ if (!is_file($dataFile)) {
     @file_put_contents($dataFile, "[]\n", LOCK_EX);
 }
 
-// ─── Append JSON (file lock) ──────────────────────────────
+// ─── Append JSON (file lock) + unique email ───────────────
 $fp = fopen($dataFile, 'c+');
 if ($fp === false) {
     http_response_code(500);
@@ -169,6 +180,25 @@ $list = json_decode($contents ?: '[]', true);
 if (!is_array($list)) {
     $list = [];
 }
+
+// One submission per email (case-insensitive)
+foreach ($list as $existing) {
+    if (!is_array($existing)) {
+        continue;
+    }
+    $existingEmail = strtolower(trim((string) ($existing['email'] ?? '')));
+    if ($existingEmail !== '' && $existingEmail === $email) {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+        http_response_code(409);
+        echo json_encode([
+            'result'  => 'error',
+            'message' => 'This email is already on the list. One entry per email address.',
+        ]);
+        exit;
+    }
+}
+
 $list[] = $record;
 
 $json = json_encode($list, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -202,9 +232,9 @@ $body = "New MMSAR website submission\n";
 $body .= "============================\n\n";
 $body .= "When:    " . $record['received_at'] . " (UTC)\n";
 $body .= "Intent:  " . $intentLabel . "\n";
-$body .= "Public:  " . ($public ? 'Yes — on public list' : 'No — private only') . "\n";
-$body .= "Name:    " . ($name !== '' ? $name : '(not given)') . "\n";
-$body .= "Email:   " . $email . "\n";
+$body .= "Public:  Yes — Alias only on public list\n";
+$body .= "Alias:   " . $alias . "\n";
+$body .= "Email:   " . $email . " (private — not released)\n";
 $body .= "Roles:   " . $rolesText . "\n";
 $body .= "Other:   " . ($other !== '' ? $other : '—') . "\n";
 $body .= "Comment: " . ($comments !== '' ? $comments : '—') . "\n";

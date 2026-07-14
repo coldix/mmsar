@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body class="dark">
 
@@ -184,11 +184,11 @@
     <!-- Support — public list + all viewpoints -->
     <section class="section" id="support" style="padding-top: 0.5rem;">
       <div class="section-header">
-        <h2>Add your name — public list</h2>
+        <h2>Add your position — public Alias list</h2>
         <p>
-          Start from zero this winter. Say where you stand before summer. All views welcome —
-          including if you are fine with how marine rescue is run now. Names and positions are
-          <strong>public</strong>; emails stay private.
+          Start from zero this winter. All views welcome — including “fine with how it is run now”.
+          The public list shows your <strong>Alias + position only</strong>. You may be emailed by
+          the project; the email list is <strong>not released to anyone</strong>.
         </p>
       </div>
 
@@ -215,12 +215,19 @@
             </p>
 
             <div class="form-group">
-              <label for="Name">Name (or first name / alias) *</label>
-              <input type="text" id="Name" name="Name" required autocomplete="name" placeholder="e.g. Sam from Mallacoota">
+              <label for="Alias">Alias for public list *</label>
+              <input type="text" id="Alias" name="Alias" required maxlength="80" autocomplete="nickname" placeholder="e.g. Sam M · Local coxswain · Gipsy Point">
+              <p class="form-hint" style="margin-top: 0.35rem;">
+                This is what the public sees. Use an Alias — not your full legal name if you prefer privacy.
+              </p>
             </div>
             <div class="form-group">
-              <label for="Email">Email * <span class="optional">(never shown publicly)</span></label>
-              <input type="email" id="Email" name="Email" required autocomplete="email" placeholder="you@example.com">
+              <label for="Email">Email * <span class="optional">(valid &amp; unique · never shown publicly)</span></label>
+              <input type="email" id="Email" name="Email" required autocomplete="email" placeholder="you@example.com" inputmode="email">
+              <p class="form-hint" style="margin-top: 0.35rem;">
+                One entry per email. You may be emailed by the project — the email list is
+                <strong>not released to anyone</strong>.
+              </p>
             </div>
 
             <fieldset class="intent-fieldset">
@@ -275,12 +282,13 @@
               <textarea id="Comments" name="Comments" rows="2" placeholder="One line is fine."></textarea>
             </div>
 
-            <label class="public-check">
+            <label class="public-check" id="public-check-label">
               <input type="checkbox" id="Public" name="Public" value="1" checked>
               <span>
-                <strong>Show my name on the public list</strong>
-                — position is visible; email is never published.
-                Uncheck only if you want a private record emailed to the project only.
+                <strong>Show my Alias on the public list</strong>
+                — position visible as Alias only. Email never published.
+                The contact list is not released to anyone. Use an Alias for privacy
+                (if you untick this, we’ll remind you).
               </span>
             </label>
 
@@ -296,8 +304,10 @@
               </button>
             </div>
             <p class="form-privacy">
-              Public list of names + positions. Emails go only to
-              <a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>.
+              Public list = <strong>Alias + position only</strong>.
+              You may be emailed by the project
+              (<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>);
+              the email list is <strong>not released to anyone</strong>.
               Proposal only — not an operational rescue service. Dial <strong>000</strong> in an emergency.
             </p>
             <div id="form-feedback"></div>
@@ -354,8 +364,8 @@
       <div class="section-header">
         <h2>Community voices</h2>
         <p>
-          Public positions only. Emails never appear. Includes people who want local management
-          and people who are fine with the current arrangement.
+          Public list shows <strong>Alias + position only</strong>. Emails never appear and are
+          not released. Includes local-management support and “fine as-is”.
         </p>
       </div>
       <div class="card voices-card">
@@ -526,6 +536,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=9"></script>
+  <script src="main.js?v=10"></script>
 </body>
 </html>
