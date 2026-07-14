@@ -1,4 +1,4 @@
-/* MMSAR — theme toggle + survey/pledge form */
+/* MMSAR — theme, support form, PDF reader */
 
 (function () {
   "use strict";
@@ -36,134 +36,143 @@
     applyTheme(next);
   };
 
-  // ─── Form / modal ────────────────────────────────────────
+  // ─── Support form (simple — maps to existing Apps Script sheet) ───
+  // Keep field names: Email, Name, Phone, Address, Survey, Pledge,
+  // Connection, Preference, Crew, Skipper, Radio, Admin, General, Other, Amount, Comments
   const WEB_APP_URL =
     "https://script.google.com/macros/s/AKfycbzcIuAmizvshrZm5l_vHBrs-tPMI2LrG1Ozcpl-pQ6pRm07Lr41QVpXs4GO8darkisLfQ/exec";
 
-  const modal = document.getElementById("form-modal");
-  const form = document.getElementById("unified-form");
-  const formTitle = document.getElementById("form-title");
-  const formSubtitle = document.getElementById("form-subtitle");
+  const form = document.getElementById("support-form");
   const submitButton = document.getElementById("submit-button");
   const feedbackDiv = document.getElementById("form-feedback");
-  const surveyCheckbox = document.getElementById("Survey");
-  const pledgeCheckbox = document.getElementById("Pledge");
-  const surveyQuestions = document.getElementById("survey-questions");
-  const pledgeQuestions = document.getElementById("pledge-questions");
+  const volunteerExtra = document.getElementById("volunteer-extra");
+  const intentRadios = document.querySelectorAll('input[name="Intent"]');
 
-  window.openFormModal = function (action) {
-    if (!modal || !form) return;
-    form.style.display = "block";
-    form.reset();
-    feedbackDiv.textContent = "";
-    feedbackDiv.className = "";
-    formTitle.textContent = "Community Input & Support";
-    formTitle.style.display = "block";
-    formSubtitle.style.display = "block";
-    submitButton.style.display = "inline-flex";
-    submitButton.disabled = false;
-    submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit';
-    surveyQuestions.style.display = "none";
-    pledgeQuestions.style.display = "none";
-
-    if (action === "Survey") {
-      surveyCheckbox.checked = true;
-      surveyQuestions.style.display = "block";
-    } else if (action === "Pledge") {
-      pledgeCheckbox.checked = true;
-      pledgeQuestions.style.display = "block";
-    }
-
-    modal.classList.add("is-open");
-    document.body.style.overflow = "hidden";
-  };
-
-  window.closeFormModal = function () {
-    if (!modal) return;
-    modal.classList.remove("is-open");
-    document.body.style.overflow = "";
-  };
-
-  if (surveyCheckbox && surveyQuestions) {
-    surveyCheckbox.addEventListener("change", function () {
-      surveyQuestions.style.display = surveyCheckbox.checked ? "block" : "none";
-    });
-  }
-  if (pledgeCheckbox && pledgeQuestions) {
-    pledgeCheckbox.addEventListener("change", function () {
-      pledgeQuestions.style.display = pledgeCheckbox.checked ? "block" : "none";
-    });
+  function selectedIntent() {
+    const el = document.querySelector('input[name="Intent"]:checked');
+    return el ? el.value : "support";
   }
 
-  // ─── PDF reader modal ────────────────────────────────────
-  const PDF_URL = "images/Vic-MSAR-Reform.pdf";
-  const pdfModal = document.getElementById("pdf-modal");
-  const pdfFrame = document.getElementById("pdf-frame");
+  function syncIntentUI() {
+    const intent = selectedIntent();
+    if (volunteerExtra) {
+      volunteerExtra.style.display = intent === "volunteer" ? "block" : "none";
+    }
 
-  window.openPdfModal = function () {
-    if (!pdfModal) return;
-    if (pdfFrame) {
-      // FitH helps browsers that support PDF fragment params
-      pdfFrame.src = PDF_URL + "#view=FitH";
-    }
-    pdfModal.classList.add("is-open");
-    document.body.style.overflow = "hidden";
-  };
+    // Hidden fields for legacy sheet columns
+    const survey = document.getElementById("Survey");
+    const pledge = document.getElementById("Pledge");
+    const connection = document.getElementById("Connection");
+    const preference = document.getElementById("Preference");
+    const amount = document.getElementById("Amount");
 
-  window.closePdfModal = function () {
-    if (!pdfModal) return;
-    pdfModal.classList.remove("is-open");
-    // Unload PDF to free memory when closed
-    if (pdfFrame) pdfFrame.src = "about:blank";
-    if (!modal || !modal.classList.contains("is-open")) {
-      document.body.style.overflow = "";
+    if (intent === "support") {
+      if (survey) survey.value = "0";
+      if (pledge) pledge.value = "1";
+      if (connection) connection.value = "Community member with an interest";
+      if (preference) preference.value = "A new, locally-managed MSAR unit";
+      if (amount) amount.value = "";
+    } else if (intent === "volunteer") {
+      if (survey) survey.value = "1";
+      if (pledge) pledge.value = "1";
+      if (connection) connection.value = "Interested in volunteering in the future";
+      if (preference) preference.value = "A new, locally-managed MSAR unit";
+      if (amount) amount.value = "$time";
+    } else {
+      // stay informed
+      if (survey) survey.value = "0";
+      if (pledge) pledge.value = "1";
+      if (connection) connection.value = "Community member with an interest";
+      if (preference) preference.value = "I have no position";
+      if (amount) amount.value = "";
     }
-  };
+  }
 
-  // Close on Escape (form or PDF)
-  document.addEventListener("keydown", function (e) {
-    if (e.key !== "Escape") return;
-    if (pdfModal && pdfModal.classList.contains("is-open")) {
-      window.closePdfModal();
-      return;
-    }
-    if (modal && modal.classList.contains("is-open")) {
-      window.closeFormModal();
-    }
+  intentRadios.forEach(function (radio) {
+    radio.addEventListener("change", syncIntentUI);
   });
+  syncIntentUI();
+
+  // Copy Facebook post text
+  const copyShareBtn = document.getElementById("copy-share-btn");
+  const shareBlurb = document.getElementById("share-blurb");
+  if (copyShareBtn && shareBlurb) {
+    copyShareBtn.addEventListener("click", function () {
+      const text = shareBlurb.textContent.replace(/\s+/g, " ").trim();
+      navigator.clipboard
+        .writeText(text)
+        .then(function () {
+          copyShareBtn.innerHTML =
+            '<i class="fas fa-check"></i> Copied — paste into Facebook';
+          setTimeout(function () {
+            copyShareBtn.innerHTML =
+              '<i class="fas fa-copy"></i> Copy post text';
+          }, 2500);
+        })
+        .catch(function () {
+          // Fallback select
+          const range = document.createRange();
+          range.selectNodeContents(shareBlurb);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          copyShareBtn.innerHTML =
+            '<i class="fas fa-info-circle"></i> Text selected — copy manually';
+        });
+    });
+  }
 
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      syncIntentUI();
 
-      if (!surveyCheckbox.checked && !pledgeCheckbox.checked) {
-        feedbackDiv.textContent =
-          "Please select at least one action (Survey or Pledge).";
+      const email = document.getElementById("Email");
+      if (!email || !email.value.trim()) {
+        feedbackDiv.textContent = "Please enter your email so we can record your support.";
         feedbackDiv.className = "error";
+        email && email.focus();
         return;
       }
 
       submitButton.disabled = true;
       submitButton.innerHTML =
-        '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        '<i class="fas fa-spinner fa-spin"></i> Sending…';
       feedbackDiv.textContent = "";
       feedbackDiv.className = "";
 
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
-      const allCheckboxes = [
-        "Survey",
-        "Pledge",
-        "Crew",
-        "Skipper",
-        "Radio",
-        "Admin",
-        "General",
-      ];
-      allCheckboxes.forEach(function (name) {
-        const el = document.getElementById(name);
-        data[name] = el && el.checked ? "1" : "0";
-      });
+
+      // Intent is UI-only; sheet does not need it, but keep in Comments prefix if useful
+      const intent = selectedIntent();
+      delete data.Intent;
+      const intentLabel =
+        intent === "volunteer"
+          ? "[Volunteer offer] "
+          : intent === "informed"
+            ? "[Stay informed] "
+            : "[Supporter] ";
+      data.Comments = intentLabel + (data.Comments || "").trim();
+
+      ["Survey", "Pledge", "Crew", "Skipper", "Radio", "Admin", "General"].forEach(
+        function (name) {
+          const el = document.getElementById(name);
+          if (!el) {
+            data[name] = "0";
+            return;
+          }
+          if (el.type === "checkbox") {
+            data[name] = el.checked ? "1" : "0";
+          } else {
+            data[name] = el.value === "1" || el.value === 1 ? "1" : String(el.value || "0");
+          }
+        }
+      );
+
+      // Force numeric-like flags for sheet
+      data.Survey = document.getElementById("Survey").value === "1" ? "1" : "0";
+      data.Pledge = document.getElementById("Pledge").value === "1" ? "1" : "0";
 
       fetch(WEB_APP_URL, {
         method: "POST",
@@ -180,51 +189,95 @@
             );
           }
 
-          form.style.display = "none";
-          formSubtitle.style.display = "none";
-          formTitle.textContent = "Thank You!";
-          formTitle.style.display = "block";
+          form.querySelectorAll("input, textarea, button, fieldset").forEach(
+            function (el) {
+              if (el.id === "submit-button") return;
+              el.disabled = true;
+            }
+          );
+          submitButton.style.display = "none";
 
           feedbackDiv.innerHTML =
-            "Your submission has been recorded. Your support is vital.<br><br>Please consider sharing this website with a friend.";
+            "<strong>Thank you — you’re on the list.</strong><br>" +
+            "If you can, share the post text with one boat person who should see this.";
           feedbackDiv.className = "success";
 
-          const copyButton = document.createElement("button");
-          copyButton.type = "button";
-          copyButton.className = "btn btn-primary";
-          copyButton.style.marginTop = "1.25rem";
-          copyButton.innerHTML =
-            '<i class="fas fa-copy"></i> Copy Share Message';
-          copyButton.onclick = function () {
-            const shareText =
-              "Hi! Please take a look at the proposal for a new community-led Marine Search and Rescue unit in Mallacoota and show your support: https://mmsar.au/";
-            navigator.clipboard
-              .writeText(shareText)
-              .then(function () {
-                copyButton.innerHTML =
-                  '<i class="fas fa-check"></i> Copied to Clipboard!';
-              })
-              .catch(function (err) {
-                console.error("Copy failed", err);
-              });
+          const again = document.createElement("button");
+          again.type = "button";
+          again.className = "btn btn-secondary";
+          again.style.marginTop = "1rem";
+          again.innerHTML = '<i class="fas fa-copy"></i> Copy Facebook post';
+          again.onclick = function () {
+            if (copyShareBtn) copyShareBtn.click();
           };
-          feedbackDiv.appendChild(copyButton);
+          feedbackDiv.appendChild(again);
         })
         .catch(function (error) {
           console.error("Submission Error:", error);
-          feedbackDiv.textContent =
-            "An error occurred, but your data may have been saved. Please check with the administrator.";
+          feedbackDiv.innerHTML =
+            "Something went wrong sending the form. Please email " +
+            '<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a> ' +
+            "instead — we still want your name.";
           feedbackDiv.className = "error";
           submitButton.disabled = false;
           submitButton.innerHTML =
-            '<i class="fas fa-paper-plane"></i> Submit';
+            '<i class="fas fa-check"></i> Count me in';
         });
     });
+  }
+
+  // ─── PDF reader modal ────────────────────────────────────
+  const PDF_URL = "images/Vic-MSAR-Reform.pdf";
+  const pdfModal = document.getElementById("pdf-modal");
+  const pdfFrame = document.getElementById("pdf-frame");
+
+  window.openPdfModal = function () {
+    if (!pdfModal) return;
+    if (pdfFrame) {
+      pdfFrame.src = PDF_URL + "#view=FitH";
+    }
+    pdfModal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  };
+
+  window.closePdfModal = function () {
+    if (!pdfModal) return;
+    pdfModal.classList.remove("is-open");
+    if (pdfFrame) pdfFrame.src = "about:blank";
+    document.body.style.overflow = "";
+  };
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && pdfModal && pdfModal.classList.contains("is-open")) {
+      window.closePdfModal();
+    }
+  });
+
+  function selectVolunteerIntent() {
+    const v = document.getElementById("intent-volunteer");
+    if (v) {
+      v.checked = true;
+      syncIntentUI();
+    }
   }
 
   // ─── Init ────────────────────────────────────────────────
   window.addEventListener("DOMContentLoaded", function () {
     const theme = localStorage.getItem("theme") || "dark";
     applyTheme(theme);
+
+    const heroVol = document.getElementById("hero-volunteer-link");
+    if (heroVol) {
+      heroVol.addEventListener("click", function () {
+        selectVolunteerIntent();
+      });
+    }
+
+    if (location.hash === "#support") {
+      // Allow ?volunteer=1 deep link from Facebook
+      if (/[?&]volunteer=1/.test(location.search) || location.hash.indexOf("volunteer") !== -1) {
+        selectVolunteerIntent();
+      }
+    }
   });
 })();

@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body class="dark">
 
@@ -78,12 +78,12 @@
         <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Mallacoota, Victoria</span>
       </div>
       <div class="hero-actions">
-        <button type="button" class="btn btn-primary" onclick="openFormModal('Survey')">
-          <i class="fas fa-poll" aria-hidden="true"></i> Take the Survey
-        </button>
-        <button type="button" class="btn btn-secondary" onclick="openFormModal('Pledge')">
-          <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Pledge Support
-        </button>
+        <a href="#support" class="btn btn-primary">
+          <i class="fas fa-pen" aria-hidden="true"></i> Add your name
+        </a>
+        <a href="#support" class="btn btn-secondary" id="hero-volunteer-link">
+          <i class="fas fa-hands-helping" aria-hidden="true"></i> I could help
+        </a>
       </div>
     </div>
 
@@ -168,51 +168,159 @@
       </div>
     </section>
 
-    <!-- CTAs -->
+    <!-- Support — 30-second form for Facebook / phone traffic -->
     <section class="section" id="support" style="padding-top: 0.5rem;">
       <div class="section-header">
-        <h2>Show your support</h2>
-        <p>Your voice helps demonstrate that Mallacoota wants a locally managed rescue unit.</p>
+        <h2>Add your name</h2>
+        <p>
+          Thirty seconds. No money asked. A short list of locals who want the $6&nbsp;million
+          base used properly — and managed here, not remotely.
+        </p>
       </div>
-      <div class="cta-grid">
-        <div class="card cta-card lift">
-          <div class="icon-wrap"><i class="fas fa-poll" aria-hidden="true"></i></div>
-          <h3>Community survey</h3>
-          <p>
-            Your feedback is vital. This survey gathers input from past, present, and potential
-            volunteers so decisions reflect those most affected.
-          </p>
-          <button type="button" class="btn btn-primary" onclick="openFormModal('Survey')">
-            <i class="fas fa-poll" aria-hidden="true"></i> Take the Survey
-          </button>
+
+      <div class="support-layout">
+        <div class="card support-card">
+          <div class="support-stats" aria-label="Early community response">
+            <div class="stat">
+              <strong>~14</strong>
+              <span>early responses</span>
+            </div>
+            <div class="stat">
+              <strong>0</strong>
+              <span>payment required</span>
+            </div>
+            <div class="stat">
+              <strong>30s</strong>
+              <span>to sign on</span>
+            </div>
+          </div>
+
+          <form id="support-form" class="support-form" novalidate>
+            <p class="support-lead">
+              I want Mallacoota’s marine rescue assets run with local people at the centre.
+            </p>
+
+            <div class="form-group">
+              <label for="Name">Name (or first name / alias)</label>
+              <input type="text" id="Name" name="Name" autocomplete="name" placeholder="e.g. Sam from Mallacoota">
+            </div>
+            <div class="form-group">
+              <label for="Email">Email *</label>
+              <input type="email" id="Email" name="Email" required autocomplete="email" placeholder="you@example.com">
+            </div>
+
+            <fieldset class="intent-fieldset">
+              <legend>I am here to…</legend>
+              <label class="intent-option">
+                <input type="radio" name="Intent" id="intent-support" value="support" checked>
+                <span>
+                  <strong>Support local management</strong>
+                  <em>Add me to the supporter list (non-binding)</em>
+                </span>
+              </label>
+              <label class="intent-option">
+                <input type="radio" name="Intent" id="intent-volunteer" value="volunteer">
+                <span>
+                  <strong>Offer to help</strong>
+                  <em>Crew, skipper, radio, shore support — when the time comes</em>
+                </span>
+              </label>
+              <label class="intent-option">
+                <input type="radio" name="Intent" id="intent-informed" value="informed">
+                <span>
+                  <strong>Stay informed</strong>
+                  <em>Occasional updates only, via this project email</em>
+                </span>
+              </label>
+            </fieldset>
+
+            <div id="volunteer-extra" class="volunteer-extra hidden-section">
+              <p class="form-hint">Optional — tick any roles you might help with later:</p>
+              <div class="role-chips">
+                <label class="chip"><input type="checkbox" id="Crew" name="Crew" value="1"> Crew</label>
+                <label class="chip"><input type="checkbox" id="Skipper" name="Skipper" value="1"> Skipper / coxswain</label>
+                <label class="chip"><input type="checkbox" id="Radio" name="Radio" value="1"> Radio</label>
+                <label class="chip"><input type="checkbox" id="Admin" name="Admin" value="1"> Admin</label>
+                <label class="chip"><input type="checkbox" id="General" name="General" value="1"> Shore / general</label>
+              </div>
+              <div class="form-group" style="margin-top: 0.85rem;">
+                <label for="Other">Other skills</label>
+                <input type="text" id="Other" name="Other" placeholder="e.g. mechanical, first aid, training">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="Comments">Anything to add? <span class="optional">(optional)</span></label>
+              <textarea id="Comments" name="Comments" rows="2" placeholder="One line is fine."></textarea>
+            </div>
+
+            <!-- Mapped for existing Google Sheet / Apps Script -->
+            <input type="hidden" id="Survey" name="Survey" value="0">
+            <input type="hidden" id="Pledge" name="Pledge" value="1">
+            <input type="hidden" id="Phone" name="Phone" value="">
+            <input type="hidden" id="Address" name="Address" value="">
+            <input type="hidden" id="Connection" name="Connection" value="Community member with an interest">
+            <input type="hidden" id="Preference" name="Preference" value="A new, locally-managed MSAR unit">
+            <input type="hidden" id="Amount" name="Amount" value="">
+
+            <div class="form-submit-wrap">
+              <button type="submit" id="submit-button" class="btn btn-primary btn-block">
+                <i class="fas fa-check" aria-hidden="true"></i> Count me in
+              </button>
+            </div>
+            <p class="form-privacy">
+              Goes to the project inbox
+              <a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>
+              — not shared as a public list. Not an operational rescue service.
+            </p>
+            <div id="form-feedback"></div>
+          </form>
         </div>
-        <div class="card cta-card lift">
-          <div class="icon-wrap"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div>
-          <h3>Pledge your support</h3>
+
+        <aside class="card support-aside">
+          <h3>Why this list matters</h3>
           <p>
-            Help us demonstrate strong community backing for this proposal by adding your name
-            to our official list of supporters. Pledges are non-binding.
+            Decision-makers notice <strong>names</strong>, not silent agreement.
+            A short supporter list from boat people, traders, and locals is evidence
+            this is not one person’s hobby.
           </p>
-          <button type="button" class="btn btn-primary" onclick="openFormModal('Pledge')">
-            <i class="fas fa-hand-holding-heart" aria-hidden="true"></i> Make a Pledge
-          </button>
-        </div>
-        <div class="card cta-card lift">
-          <div class="icon-wrap"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
-          <h3>MSAR documents</h3>
           <p>
-            Learn about the official training courses required to become a qualified marine
-            rescue crew member in Victoria.
+            The old long survey and money pledge asked too much for a Facebook scroll.
+            This is just: <em>I care, contact me if it moves.</em>
           </p>
-          <a
-            href="https://www.emv.vic.gov.au/publications?field_publication_type_target_id=All&publicationfilter=MSAR&items_per_page=10"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-ghost"
-          >
-            <i class="fas fa-external-link-alt" aria-hidden="true"></i> View MSAR Documents
-          </a>
-        </div>
+          <h3 class="aside-sub">Share on Facebook</h3>
+          <p class="share-blurb" id="share-blurb">
+            Mallacoota’s $6m marine rescue base is finished and sits empty most of the time.
+            If you want it run with local people — not left idle — add your name (30 seconds):
+            https://mmsar.au/#support
+          </p>
+          <div class="aside-actions">
+            <button type="button" class="btn btn-secondary" id="copy-share-btn">
+              <i class="fas fa-copy" aria-hidden="true"></i> Copy post text
+            </button>
+            <a
+              class="btn btn-ghost"
+              href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmmsar.au%2F%23support"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="fab fa-facebook" aria-hidden="true"></i> Share link
+            </a>
+          </div>
+          <p class="form-hint" style="margin-top: 1rem;">
+            Prefer email?
+            <a href="mailto:mallacootamsar@gmail.com?subject=I%20support%20local%20MSAR%20for%20Mallacoota&body=Hi%2C%20please%20add%20my%20name%20in%20support%20of%20a%20locally%20managed%20marine%20rescue%20unit%20in%20Mallacoota.%0A%0AName%3A%20">
+              Write to mallacootamsar@gmail.com
+            </a>
+          </p>
+          <p class="form-hint">
+            <a
+              href="https://www.emv.vic.gov.au/publications?field_publication_type_target_id=All&publicationfilter=MSAR&items_per_page=10"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Official MSAR training documents (EMV)</a>
+          </p>
+        </aside>
       </div>
     </section>
 
@@ -370,136 +478,6 @@
     </div>
   </div>
 
-  <!-- Form modal -->
-  <div
-    id="form-modal"
-    class="modal-overlay"
-    onclick="if (event.target === this) closeFormModal()"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="form-title"
-  >
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <button type="button" class="modal-close" onclick="closeFormModal()" aria-label="Close form">×</button>
-      <h2 id="form-title">Community Input &amp; Support</h2>
-      <p id="form-subtitle" class="modal-subtitle">Your details will be updated if you have submitted previously.</p>
-
-      <form id="unified-form">
-        <hr class="form-divider">
-        <div class="form-group">
-          <label for="Email">Email Address *</label>
-          <input type="email" id="Email" name="Email" required autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label for="Name">Name (or Alias)</label>
-          <input type="text" id="Name" name="Name" autocomplete="name">
-        </div>
-        <div class="form-group">
-          <label for="Phone">Phone Number</label>
-          <input type="tel" id="Phone" name="Phone" autocomplete="tel">
-        </div>
-        <div class="form-group">
-          <label for="Address">Address / Location</label>
-          <input type="text" id="Address" name="Address" autocomplete="street-address">
-        </div>
-
-        <hr class="form-divider">
-        <div class="form-group action-selection">
-          <label>I would like to:</label>
-          <div class="checkbox-group">
-            <input type="checkbox" id="Survey" name="Survey" value="1">
-            <label for="Survey">Take the Survey</label>
-          </div>
-          <div class="checkbox-group">
-            <input type="checkbox" id="Pledge" name="Pledge" value="1">
-            <label for="Pledge">Make a Pledge</label>
-          </div>
-        </div>
-
-        <div id="survey-questions" class="hidden-section">
-          <hr class="form-divider">
-          <h4>Survey Questions</h4>
-          <div class="form-group">
-            <label for="Connection">Connection to Marine Rescue?</label>
-            <select id="Connection" name="Connection">
-              <option value="">--Select--</option>
-              <option value="Current AVCGA member">Current AVCGA member</option>
-              <option value="Former AVCGA member">Former AVCGA member</option>
-              <option value="Interested in volunteering in the future">Interested in volunteering</option>
-              <option value="Community member with an interest">Community member</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="Preference">Preferred governance model?</label>
-            <select id="Preference" name="Preference">
-              <option value="">--Select--</option>
-              <option value="A new, locally-managed MSAR unit">A new, locally-managed MSAR unit</option>
-              <option value="The existing structure (remote AVCGA)">The existing structure (remote AVCGA)</option>
-              <option value="I have no position">I have no position</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Roles of interest?</label>
-            <div class="checkbox-group">
-              <input type="checkbox" id="Crew" name="Crew" value="1">
-              <label for="Crew">Crew</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="Skipper" name="Skipper" value="1">
-              <label for="Skipper">Skipper</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="Radio" name="Radio" value="1">
-              <label for="Radio">Radio</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="Admin" name="Admin" value="1">
-              <label for="Admin">Admin</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="General" name="General" value="1">
-              <label for="General">General</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="Other">Other interest:</label>
-            <input type="text" id="Other" name="Other">
-          </div>
-        </div>
-
-        <div id="pledge-questions" class="hidden-section">
-          <hr class="form-divider">
-          <h4>Pledge of Support (Non-Binding)</h4>
-          <div class="form-group">
-            <label for="Amount">Pledge amount:</label>
-            <select id="Amount" name="Amount">
-              <option value="">--Select--</option>
-              <option value="$25">$25</option>
-              <option value="$50">$50</option>
-              <option value="$100">$100</option>
-              <option value="$250">$250</option>
-              <option value="$500">$500</option>
-              <option value="$time">A pledge of my time</option>
-            </select>
-          </div>
-        </div>
-
-        <hr class="form-divider">
-        <div class="form-group">
-          <label for="Comments">Additional Comments</label>
-          <textarea id="Comments" name="Comments" rows="3"></textarea>
-        </div>
-        <div class="form-submit-wrap">
-          <button type="submit" id="submit-button" class="btn btn-primary">
-            <i class="fas fa-paper-plane" aria-hidden="true"></i> Submit
-          </button>
-        </div>
-      </form>
-
-      <div id="form-feedback"></div>
-    </div>
-  </div>
-
-  <script src="main.js?v=5"></script>
+  <script src="main.js?v=6"></script>
 </body>
 </html>
