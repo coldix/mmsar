@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body class="dark">
 
@@ -69,20 +69,20 @@
         Local marine rescue for Mallacoota
       </h1>
       <p class="hero-lead">
-        A $7&nbsp;million shared emergency base, $2&nbsp;million of MSAR assets in town,
-        and an operating budget — still waiting for local leadership to put them to work.
+        Winter is quiet. Start from zero. Get local marine rescue sorted before summer.
+        A public list of where people stand — including if you are fine with how it is run now.
       </p>
       <div class="hero-meta">
         <span><i class="fas fa-building" aria-hidden="true"></i> Incorporated association</span>
-        <span><i class="fas fa-hourglass-half" aria-hidden="true"></i> Not yet operational</span>
-        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Mallacoota, Victoria</span>
+        <span><i class="fas fa-snowflake" aria-hidden="true"></i> Winter build-up</span>
+        <span><i class="fas fa-sun" aria-hidden="true"></i> Target: ready for summer</span>
       </div>
       <div class="hero-actions">
         <a href="#support" class="btn btn-primary">
-          <i class="fas fa-pen" aria-hidden="true"></i> Add your name
+          <i class="fas fa-pen" aria-hidden="true"></i> Add your name (public)
         </a>
-        <a href="#support" class="btn btn-secondary" id="hero-volunteer-link">
-          <i class="fas fa-hands-helping" aria-hidden="true"></i> I could help
+        <a href="#voices" class="btn btn-secondary">
+          <i class="fas fa-list" aria-hidden="true"></i> See the list
         </a>
       </div>
     </div>
@@ -151,13 +151,20 @@
             delivers safety for local waters.
           </p>
           <p>
-            That is what this proposal is for: put local talent, a shared $7&nbsp;million base,
-            and $2&nbsp;million of MSAR assets together for the community they were meant to serve.
+            We are starting from <strong>zero</strong> on a honest public count of where Mallacoota stands.
+            Winter is the quiet season — the right window to organise so the problem is fixed
+            <strong>before summer</strong> traffic and risk return. Pushback from existing structures
+            is expected. That does not change the need for a clear local answer.
+          </p>
+          <p>
+            That answer: put local talent, a shared $7&nbsp;million base, and $2&nbsp;million of MSAR
+            assets together for the community they were meant to serve — under the official MSAR
+            framework, managed here.
           </p>
           <div class="status-pills" style="margin-top: 1.25rem;">
             <span class="pill"><i class="fas fa-file-signature" aria-hidden="true"></i> Inc. registered</span>
             <span class="pill red"><i class="fas fa-ban" aria-hidden="true"></i> Not yet operational</span>
-            <span class="pill"><i class="fas fa-users" aria-hidden="true"></i> Seeking community support</span>
+            <span class="pill"><i class="fas fa-list" aria-hidden="true"></i> Public voices list</span>
           </div>
         </div>
         <div class="vision-aside">
@@ -174,54 +181,55 @@
       </div>
     </section>
 
-    <!-- Support — 30-second form for Facebook / phone traffic -->
+    <!-- Support — public list + all viewpoints -->
     <section class="section" id="support" style="padding-top: 0.5rem;">
       <div class="section-header">
-        <h2>Add your name</h2>
+        <h2>Add your name — public list</h2>
         <p>
-          Thirty seconds. No money asked. A short list of locals who want the $7&nbsp;million
-          shared base and $2&nbsp;million of MSAR assets used properly — managed here, not remotely.
+          Start from zero this winter. Say where you stand before summer. All views welcome —
+          including if you are fine with how marine rescue is run now. Names and positions are
+          <strong>public</strong>; emails stay private.
         </p>
       </div>
 
       <div class="support-layout">
         <div class="card support-card">
-          <div class="support-stats" aria-label="Early community response">
+          <div class="support-stats" id="live-stats" aria-label="Community responses">
             <div class="stat">
-              <strong>~14</strong>
-              <span>early responses</span>
+              <strong id="stat-public">0</strong>
+              <span>on public list</span>
             </div>
             <div class="stat">
-              <strong>0</strong>
-              <span>payment required</span>
+              <strong id="stat-support">0</strong>
+              <span>want local</span>
             </div>
             <div class="stat">
-              <strong>30s</strong>
-              <span>to sign on</span>
+              <strong id="stat-status">0</strong>
+              <span>fine as-is</span>
             </div>
           </div>
 
           <form id="support-form" class="support-form" novalidate>
             <p class="support-lead">
-              I want Mallacoota’s marine rescue assets run with local people at the centre.
+              Honest count. No money. One position each.
             </p>
 
             <div class="form-group">
-              <label for="Name">Name (or first name / alias)</label>
-              <input type="text" id="Name" name="Name" autocomplete="name" placeholder="e.g. Sam from Mallacoota">
+              <label for="Name">Name (or first name / alias) *</label>
+              <input type="text" id="Name" name="Name" required autocomplete="name" placeholder="e.g. Sam from Mallacoota">
             </div>
             <div class="form-group">
-              <label for="Email">Email *</label>
+              <label for="Email">Email * <span class="optional">(never shown publicly)</span></label>
               <input type="email" id="Email" name="Email" required autocomplete="email" placeholder="you@example.com">
             </div>
 
             <fieldset class="intent-fieldset">
-              <legend>I am here to…</legend>
+              <legend>Where I stand</legend>
               <label class="intent-option">
                 <input type="radio" name="Intent" id="intent-support" value="support" checked>
                 <span>
                   <strong>Support local management</strong>
-                  <em>Add me to the supporter list (non-binding)</em>
+                  <em>I want MSAR assets managed here, under a local unit</em>
                 </span>
               </label>
               <label class="intent-option">
@@ -232,10 +240,17 @@
                 </span>
               </label>
               <label class="intent-option">
+                <input type="radio" name="Intent" id="intent-status" value="status_quo">
+                <span>
+                  <strong>I’m fine with how it is run now</strong>
+                  <em>I support the current / existing remote arrangements</em>
+                </span>
+              </label>
+              <label class="intent-option">
                 <input type="radio" name="Intent" id="intent-informed" value="informed">
                 <span>
-                  <strong>Stay informed</strong>
-                  <em>Occasional updates only, via this project email</em>
+                  <strong>Undecided — stay informed</strong>
+                  <em>Keep me on the list for updates only</em>
                 </span>
               </label>
             </fieldset>
@@ -256,9 +271,18 @@
             </div>
 
             <div class="form-group">
-              <label for="Comments">Anything to add? <span class="optional">(optional)</span></label>
+              <label for="Comments">Anything to add? <span class="optional">(optional — not shown on public list)</span></label>
               <textarea id="Comments" name="Comments" rows="2" placeholder="One line is fine."></textarea>
             </div>
+
+            <label class="public-check">
+              <input type="checkbox" id="Public" name="Public" value="1" checked>
+              <span>
+                <strong>Show my name on the public list</strong>
+                — position is visible; email is never published.
+                Uncheck only if you want a private record emailed to the project only.
+              </span>
+            </label>
 
             <!-- Honeypot — leave empty (bots often fill this) -->
             <div class="hp-field" aria-hidden="true">
@@ -268,35 +292,38 @@
 
             <div class="form-submit-wrap">
               <button type="submit" id="submit-button" class="btn btn-primary btn-block">
-                <i class="fas fa-check" aria-hidden="true"></i> Count me in
+                <i class="fas fa-check" aria-hidden="true"></i> Publish my position
               </button>
             </div>
             <p class="form-privacy">
-              Saved privately on this site and emailed to
+              Public list of names + positions. Emails go only to
               <a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>.
-              Not a public list. Not an operational rescue service.
+              Proposal only — not an operational rescue service. Dial <strong>000</strong> in an emergency.
             </p>
             <div id="form-feedback"></div>
           </form>
         </div>
 
         <aside class="card support-aside">
-          <h3>Why this list matters</h3>
+          <h3>Why a public list</h3>
           <p>
-            Decision-makers notice <strong>names</strong>, not silent agreement.
-            A short supporter list from boat people, traders, and locals is evidence
-            this is not one person’s hobby.
+            Silent agreement does not move decision-makers. A visible list of locals —
+            <strong>for and against change</strong> — is honest evidence of community view.
           </p>
           <p>
-            The old long survey and money pledge asked too much for a Facebook scroll.
-            This is just: <em>I care, contact me if it moves.</em>
+            Winter is quiet. We start the count at zero and build through the off-season so
+            Mallacoota is not still arguing about this when summer risk returns.
+          </p>
+          <p>
+            Existing organisations may push back hard. That is expected. This page still asks
+            for a clear public answer from people who live and boat here.
           </p>
           <h3 class="aside-sub">Share on Facebook</h3>
           <p class="share-blurb" id="share-blurb">
-            Mallacoota has a $7m emergency base (shared with SES &amp; Lifesaving), about $2m of MSAR
-            assets in town, and a budget to run them — yet local marine rescue still lacks strong
-            local leadership. The issues in the 2014 Victorian inquiry report have not been fixed.
-            If you want this run with local people, add your name (30 seconds):
+            Mallacoota: $7m shared emergency base (SES, Lifesaving, MSAR), ~$2m MSAR assets, operating
+            budget — yet local marine rescue still lacks strong local leadership. 2014 inquiry issues
+            are still open. Winter is quiet: public list from zero, aim to sort this before summer.
+            All views welcome, including “I’m fine with how it’s run now”:
             https://mmsar.au/#support
           </p>
           <div class="aside-actions">
@@ -314,18 +341,34 @@
           </div>
           <p class="form-hint" style="margin-top: 1rem;">
             Prefer email?
-            <a href="mailto:mallacootamsar@gmail.com?subject=I%20support%20local%20MSAR%20for%20Mallacoota&body=Hi%2C%20please%20add%20my%20name%20in%20support%20of%20a%20locally%20managed%20marine%20rescue%20unit%20in%20Mallacoota.%0A%0AName%3A%20">
+            <a href="mailto:mallacootamsar@gmail.com?subject=MMSAR%20public%20list&body=Name%3A%0APosition%20(support%20local%20%2F%20volunteer%20%2F%20fine%20as-is%20%2F%20undecided)%3A%0A">
               Write to mallacootamsar@gmail.com
             </a>
           </p>
-          <p class="form-hint">
-            <a
-              href="https://www.emv.vic.gov.au/publications?field_publication_type_target_id=All&publicationfilter=MSAR&items_per_page=10"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Official MSAR training documents (EMV)</a>
-          </p>
         </aside>
+      </div>
+    </section>
+
+    <!-- Public voices list -->
+    <section class="section" id="voices" style="padding-top: 0.5rem;">
+      <div class="section-header">
+        <h2>Community voices</h2>
+        <p>
+          Public positions only. Emails never appear. Includes people who want local management
+          and people who are fine with the current arrangement.
+        </p>
+      </div>
+      <div class="card voices-card">
+        <div class="voices-filters" id="voices-filters" role="tablist">
+          <button type="button" class="voices-filter is-active" data-filter="all">All</button>
+          <button type="button" class="voices-filter" data-filter="support">Local management</button>
+          <button type="button" class="voices-filter" data-filter="volunteer">Offers to help</button>
+          <button type="button" class="voices-filter" data-filter="status_quo">Fine as-is</button>
+          <button type="button" class="voices-filter" data-filter="informed">Undecided</button>
+        </div>
+        <div id="voices-list" class="voices-list" aria-live="polite">
+          <p class="voices-empty">Loading the public list…</p>
+        </div>
       </div>
     </section>
 
@@ -483,6 +526,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=8"></script>
+  <script src="main.js?v=9"></script>
 </body>
 </html>

@@ -1,7 +1,10 @@
-/* MMSAR — theme, support form (JSON + email), PDF reader */
+/* MMSAR — theme, public support form, voices list, PDF reader */
 
 (function () {
   "use strict";
+
+  const SUBMIT_URL = "api/submit.php";
+  const LIST_URL = "api/list.php";
 
   // ─── Theme ───────────────────────────────────────────────
   function applyTheme(theme) {
@@ -32,13 +35,10 @@
   }
 
   window.toggleTheme = function () {
-    const next = document.body.classList.contains("light") ? "dark" : "light";
-    applyTheme(next);
+    applyTheme(document.body.classList.contains("light") ? "dark" : "light");
   };
 
-  // ─── Support form → api/submit.php ───────────────────────
-  const SUBMIT_URL = "api/submit.php";
-
+  // ─── Form ────────────────────────────────────────────────
   const form = document.getElementById("support-form");
   const submitButton = document.getElementById("submit-button");
   const feedbackDiv = document.getElementById("form-feedback");
@@ -51,9 +51,9 @@
   }
 
   function syncIntentUI() {
-    const intent = selectedIntent();
     if (volunteerExtra) {
-      volunteerExtra.style.display = intent === "volunteer" ? "block" : "none";
+      volunteerExtra.style.display =
+        selectedIntent() === "volunteer" ? "block" : "none";
     }
   }
 
@@ -83,8 +83,6 @@
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
-          copyShareBtn.innerHTML =
-            '<i class="fas fa-info-circle"></i> Text selected — copy manually';
         });
     });
   }
@@ -97,10 +95,21 @@
       const nameEl = document.getElementById("Name");
       const commentsEl = document.getElementById("Comments");
       const otherEl = document.getElementById("Other");
+      const publicEl = document.getElementById("Public");
 
-      if (!emailEl || !emailEl.value.trim()) {
+      const name = nameEl ? nameEl.value.trim() : "";
+      const email = emailEl ? emailEl.value.trim() : "";
+      const isPublic = !publicEl || publicEl.checked;
+
+      if (!name) {
         feedbackDiv.textContent =
-          "Please enter your email so we can record your support.";
+          "Please enter a name or alias for the public list.";
+        feedbackDiv.className = "error";
+        nameEl && nameEl.focus();
+        return;
+      }
+      if (!email) {
+        feedbackDiv.textContent = "Please enter your email (kept private).";
         feedbackDiv.className = "error";
         emailEl && emailEl.focus();
         return;
@@ -113,9 +122,10 @@
       });
 
       const payload = {
-        name: nameEl ? nameEl.value.trim() : "",
-        email: emailEl.value.trim(),
+        name: name,
+        email: email,
         intent: selectedIntent(),
+        public: isPublic,
         roles: roles,
         other: otherEl ? otherEl.value.trim() : "",
         comments: commentsEl ? commentsEl.value.trim() : "",
@@ -124,7 +134,7 @@
 
       submitButton.disabled = true;
       submitButton.innerHTML =
-        '<i class="fas fa-spinner fa-spin"></i> Sending…';
+        '<i class="fas fa-spinner fa-spin"></i> Publishing…';
       feedbackDiv.textContent = "";
       feedbackDiv.className = "";
 
@@ -157,9 +167,14 @@
           submitButton.style.display = "none";
 
           feedbackDiv.innerHTML =
-            "<strong>Thank you — you’re on the list.</strong><br>" +
-            "We emailed the project inbox. If you can, share this with one boat person.";
+            "<strong>Thank you — recorded.</strong><br>" +
+            (isPublic
+              ? "Your name is on the public list below."
+              : "Private record only (not on the public list).") +
+            " Share the winter push if you can.";
           feedbackDiv.className = "success";
+
+          loadVoices();
 
           const again = document.createElement("button");
           again.type = "button";
@@ -174,27 +189,117 @@
         .catch(function (error) {
           console.error("Submission Error:", error);
           feedbackDiv.innerHTML =
-            "Something went wrong saving the form. Please email " +
-            '<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a> ' +
-            "instead — we still want your name.";
+            (error.message || "Something went wrong.") +
+            " You can also email " +
+            '<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>.';
           feedbackDiv.className = "error";
           submitButton.disabled = false;
           submitButton.innerHTML =
-            '<i class="fas fa-check"></i> Count me in';
+            '<i class="fas fa-check"></i> Publish my position';
         });
     });
   }
 
-  // ─── PDF reader modal ────────────────────────────────────
+  // ─── Public voices list ──────────────────────────────────
+  var voicesCache = [];
+  var activeFilter = "all";
+
+  function setStat(id, n) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(n);
+  }
+
+  function renderVoices() {
+    const box = document.getElementById("voices-list");
+    if (!box) return;
+
+    var rows = voicesCache;
+    if (activeFilter !== "all") {
+      rows = voicesCache.filter(function (e) {
+        return e.intent === activeFilter;
+      });
+    }
+
+    if (!rows.length) {
+      box.innerHTML =
+        '<p class="voices-empty">No public names yet — be the first. Winter starts at zero.</p>';
+      return;
+    }
+
+    box.innerHTML = rows
+      .map(function (e) {
+        var badgeClass = e.intent || "support";
+        return (
+          '<div class="voice-row">' +
+          '<span class="voice-name"></span>' +
+          '<span class="voice-badge ' +
+          badgeClass +
+          '"></span>' +
+          '<span class="voice-meta"></span>' +
+          "</div>"
+        );
+      })
+      .join("");
+
+    // Fill text safely
+    var nodes = box.querySelectorAll(".voice-row");
+    rows.forEach(function (e, i) {
+      var row = nodes[i];
+      if (!row) return;
+      row.querySelector(".voice-name").textContent = e.name;
+      row.querySelector(".voice-badge").textContent = e.intent_label;
+      var roles =
+        e.roles && e.roles.length ? "Roles: " + e.roles.join(", ") + " · " : "";
+      row.querySelector(".voice-meta").textContent =
+        roles + (e.date ? e.date : "");
+    });
+  }
+
+  function loadVoices() {
+    fetch(LIST_URL, { cache: "no-store" })
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (data) {
+        if (!data || data.result !== "success") throw new Error("list fail");
+        voicesCache = data.entries || [];
+        var c = data.counts || {};
+        setStat("stat-public", c.public || 0);
+        setStat("stat-support", (c.support || 0) + (c.volunteer || 0));
+        setStat("stat-status", c.status_quo || 0);
+        renderVoices();
+      })
+      .catch(function () {
+        var box = document.getElementById("voices-list");
+        if (box) {
+          box.innerHTML =
+            '<p class="voices-empty">Could not load the public list right now. Try refresh.</p>';
+        }
+      });
+  }
+
+  var filters = document.getElementById("voices-filters");
+  if (filters) {
+    filters.addEventListener("click", function (e) {
+      var btn = e.target.closest(".voices-filter");
+      if (!btn) return;
+      filters.querySelectorAll(".voices-filter").forEach(function (b) {
+        b.classList.remove("is-active");
+      });
+      btn.classList.add("is-active");
+      activeFilter = btn.getAttribute("data-filter") || "all";
+      renderVoices();
+    });
+  }
+
+  // ─── PDF ─────────────────────────────────────────────────
   const PDF_URL = "images/Vic-MSAR-Reform.pdf";
   const pdfModal = document.getElementById("pdf-modal");
   const pdfFrame = document.getElementById("pdf-frame");
 
   window.openPdfModal = function () {
     if (!pdfModal) return;
-    if (pdfFrame) {
-      pdfFrame.src = PDF_URL + "#view=FitH";
-    }
+    if (pdfFrame) pdfFrame.src = PDF_URL + "#view=FitH";
     pdfModal.classList.add("is-open");
     document.body.style.overflow = "hidden";
   };
@@ -212,32 +317,8 @@
     }
   });
 
-  function selectVolunteerIntent() {
-    const v = document.getElementById("intent-volunteer");
-    if (v) {
-      v.checked = true;
-      syncIntentUI();
-    }
-  }
-
   window.addEventListener("DOMContentLoaded", function () {
-    const theme = localStorage.getItem("theme") || "dark";
-    applyTheme(theme);
-
-    const heroVol = document.getElementById("hero-volunteer-link");
-    if (heroVol) {
-      heroVol.addEventListener("click", function () {
-        selectVolunteerIntent();
-      });
-    }
-
-    if (location.hash === "#support") {
-      if (
-        /[?&]volunteer=1/.test(location.search) ||
-        location.hash.indexOf("volunteer") !== -1
-      ) {
-        selectVolunteerIntent();
-      }
-    }
+    applyTheme(localStorage.getItem("theme") || "dark");
+    loadVoices();
   });
 })();

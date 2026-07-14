@@ -78,9 +78,19 @@ if ($email === false) {
 
 $name = s($in['name'] ?? $in['Name'] ?? '', 120);
 $intent = s($in['intent'] ?? $in['Intent'] ?? 'support', 40);
-$allowedIntents = ['support', 'volunteer', 'informed'];
+$allowedIntents = ['support', 'volunteer', 'informed', 'status_quo'];
 if (!in_array($intent, $allowedIntents, true)) {
     $intent = 'support';
+}
+
+// Public list is default; emails always stay private
+$publicRaw = $in['public'] ?? $in['Public'] ?? true;
+$public = !($publicRaw === false || $publicRaw === '0' || $publicRaw === 0 || $publicRaw === 'false' || $publicRaw === 'off');
+
+if ($public && $name === '') {
+    http_response_code(400);
+    echo json_encode(['result' => 'error', 'message' => 'A name (or first name / alias) is required for the public list.']);
+    exit;
 }
 
 $roles = [];
@@ -112,6 +122,7 @@ $record = [
     'name'        => $name,
     'email'       => $email,
     'intent'      => $intent,
+    'public'      => $public,
     'roles'       => $roles,
     'other'       => $other,
     'comments'    => $comments,
@@ -178,10 +189,11 @@ fclose($fp);
 
 // ─── Email notification ───────────────────────────────────
 $intentLabel = [
-    'support'   => 'Support local management',
-    'volunteer' => 'Offer to help (volunteer)',
-    'informed'  => 'Stay informed',
-][$intent];
+    'support'    => 'Support local management',
+    'volunteer'  => 'Offer to help (volunteer)',
+    'informed'   => 'Stay informed',
+    'status_quo' => 'Fine with how it is run now',
+][$intent] ?? $intent;
 
 $rolesText = $roles ? implode(', ', $roles) : '—';
 $subject = sprintf('[%s] New %s — %s', SITE_NAME, $intent, $name !== '' ? $name : $email);
@@ -190,6 +202,7 @@ $body = "New MMSAR website submission\n";
 $body .= "============================\n\n";
 $body .= "When:    " . $record['received_at'] . " (UTC)\n";
 $body .= "Intent:  " . $intentLabel . "\n";
+$body .= "Public:  " . ($public ? 'Yes — on public list' : 'No — private only') . "\n";
 $body .= "Name:    " . ($name !== '' ? $name : '(not given)') . "\n";
 $body .= "Email:   " . $email . "\n";
 $body .= "Roles:   " . $rolesText . "\n";
@@ -198,7 +211,7 @@ $body .= "Comment: " . ($comments !== '' ? $comments : '—') . "\n";
 $body .= "\nID: " . $record['id'] . "\n";
 $body .= "IP: " . $record['ip'] . "\n";
 $body .= "\n— Stored in data/submissions.json on the server\n";
-$body .= "— https://mmsar.au/\n";
+$body .= "— Public list: https://mmsar.au/#voices\n";
 
 $headers = [
     'From: ' . SITE_NAME . ' Form <' . NOTIFY_FROM . '>',
