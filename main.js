@@ -92,6 +92,70 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value).trim());
   }
 
+  /** Client-side mirror of server alias filter (server is authoritative). */
+  function aliasIsOffensive(alias) {
+    var n = String(alias || "")
+      .toLowerCase()
+      .replace(/[\u200b-\u200d\ufeff\u00ad]/g, "");
+    var compact = n.replace(/[\s\-_.,*\/\\|~'"`]+/g, "");
+    var map = {
+      "0": "o",
+      "1": "i",
+      "3": "e",
+      "4": "a",
+      "5": "s",
+      "7": "t",
+      "8": "b",
+      "9": "g",
+      "@": "a",
+      $: "s",
+      "!": "i",
+      "#": "u",
+      "+": "t",
+    };
+    var norm = compact.replace(/[01345789@$!#+]/g, function (ch) {
+      return map[ch] || ch;
+    });
+    var letters = norm.replace(/[^a-z]/g, "");
+    var blocked = [
+      "fuck",
+      "fuk",
+      "fck",
+      "fuc",
+      "phuck",
+      "shit",
+      "cunt",
+      "bitch",
+      "asshole",
+      "arsehole",
+      "bastard",
+      "dickhead",
+      "wanker",
+      "slut",
+      "whore",
+      "nigger",
+      "nigga",
+      "faggot",
+      "retard",
+      "motherfucker",
+      "getfucked",
+      "fuckyou",
+      "fuckoff",
+      "pedo",
+      "paedo",
+      "rape",
+      "nazi",
+      "hitler",
+    ];
+    for (var i = 0; i < blocked.length; i++) {
+      if (letters.indexOf(blocked[i]) !== -1) return true;
+    }
+    if (/get\s*f+u+[c(k]+/i.test(n) || /f+u+[c(k]+\s*(you|off|u)\b/i.test(n)) {
+      return true;
+    }
+    return false;
+  }
+
   // If they try to leave the public list, keep them on it and explain Alias
   const publicEl = document.getElementById("Public");
   if (publicEl) {
@@ -145,6 +209,13 @@
       if (alias.indexOf("@") !== -1) {
         feedbackDiv.textContent =
           "Use an Alias for the public list — not your email address.";
+        feedbackDiv.className = "error";
+        aliasEl && aliasEl.focus();
+        return;
+      }
+      if (aliasIsOffensive(alias)) {
+        feedbackDiv.textContent =
+          "That Alias is not allowed on the public list. Please choose a respectful name or nickname.";
         feedbackDiv.className = "error";
         aliasEl && aliasEl.focus();
         return;

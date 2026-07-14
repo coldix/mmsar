@@ -98,6 +98,83 @@ if (str_contains($alias, '@')) {
     exit;
 }
 
+/**
+ * Reject clear abuse / obscenity in public Alias (with common obfuscation).
+ * Not perfect — stops casual vandalism on a public list.
+ */
+function alias_is_offensive(string $alias): bool {
+    $n = mb_strtolower($alias, 'UTF-8');
+    // Strip zero-width / soft hyphens
+    $n = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00AD}]/u', '', $n) ?? $n;
+    // Collapse separators so "f.u.c.k" / "f u c k" match
+    $compact = preg_replace('/[\s\-_.,*\/\\\\|~\'"`]+/u', '', $n) ?? $n;
+    // Leetspeak / symbol stand-ins
+    $map = [
+        '0' => 'o', '1' => 'i', '3' => 'e', '4' => 'a', '5' => 's',
+        '7' => 't', '8' => 'b', '9' => 'g', '@' => 'a', '$' => 's',
+        '!' => 'i', '#' => 'u', '+' => 't',
+    ];
+    $norm = strtr($compact, $map);
+    // Keep letters only for word checks
+    $letters = preg_replace('/[^a-z]/', '', $norm) ?? $norm;
+
+    $blocked = [
+        'fuck', 'fuk', 'fck', 'fuc', 'fukc', 'phuck', 'fuxk',
+        'shit', 'sh1t', 'sht',
+        'cunt', 'cnt',
+        'bitch', 'btch',
+        'asshole', 'arsehole', 'aishole',
+        'bastard',
+        'dickhead', 'dick', 'd1ck',
+        'cock', 'cok',
+        'piss', 'pss',
+        'wanker', 'wank',
+        'slut', 'whore', 'hoe',
+        'nigger', 'nigga', 'faggot', 'fag',
+        'retard', 'spastic',
+        'motherfucker', 'mfucker', 'mofo',
+        'getfucked', 'fuckyou', 'fuckoff', 'fuckyourself',
+        'goaway', // too broad? skip
+        'kys', 'killall',
+        'pedo', 'paedo', 'rape',
+        'nazi', 'hitler',
+    ];
+    // Drop overly broad terms
+    $blocked = array_values(array_diff($blocked, ['goaway', 'hoe', 'fag', 'cock', 'dick', 'piss']));
+
+    foreach ($blocked as $word) {
+        if ($word !== '' && str_contains($letters, $word)) {
+            return true;
+        }
+    }
+
+    // Phrase patterns on original-ish compact text
+    $phrases = [
+        '/get\s*f+u+[c(k]+/i',
+        '/f+u+[c(k]+\s*(you|off|u)\b/i',
+        '/go\s*f+u+[c(k]+/i',
+        '/\bf+u+[c(k]+\b/i',
+        '/\bc+u+n+t+\b/i',
+        '/\bs+h+[i1!]+t+\b/i',
+    ];
+    foreach ($phrases as $re) {
+        if (preg_match($re, $n) || preg_match($re, $norm)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+if (alias_is_offensive($alias)) {
+    http_response_code(400);
+    echo json_encode([
+        'result'  => 'error',
+        'message' => 'That Alias is not allowed on the public list. Please choose a respectful name or nickname.',
+    ]);
+    exit;
+}
+
 $intent = s($in['intent'] ?? $in['Intent'] ?? 'support', 40);
 $allowedIntents = ['support', 'volunteer', 'informed', 'status_quo'];
 if (!in_array($intent, $allowedIntents, true)) {
