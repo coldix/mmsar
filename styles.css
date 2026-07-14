@@ -785,6 +785,52 @@ h1, h2, h3, h4 {
   overflow: hidden;
 }
 
+.connection-fieldset {
+  margin-bottom: 1.15rem;
+}
+.connection-option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.connection-option:hover {
+  border-color: rgba(94, 200, 232, 0.35);
+}
+.connection-option:has(input:checked) {
+  border-color: rgba(94, 200, 232, 0.55);
+  background: var(--cyan-soft);
+}
+.connection-option input {
+  margin-top: 0.3rem;
+  accent-color: var(--cyan);
+  flex-shrink: 0;
+}
+.connection-option strong {
+  display: block;
+  color: #fff;
+  font-size: 0.95rem;
+}
+.connection-option em {
+  display: block;
+  font-style: normal;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.12rem;
+}
+body.light .connection-option {
+  background: rgba(255, 255, 255, 0.65);
+}
+body.light .connection-option strong {
+  color: var(--navy);
+}
+
 .public-check {
   display: flex;
   gap: 0.75rem;

@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body class="dark">
 
@@ -230,6 +230,45 @@
               </p>
             </div>
 
+            <fieldset class="intent-fieldset connection-fieldset">
+              <legend>My connection * <span class="optional">(tick all that apply)</span></legend>
+              <label class="connection-option">
+                <input type="checkbox" name="Connection" id="conn-live" value="live_here">
+                <span>
+                  <strong>I live here</strong>
+                  <em>Mallacoota or nearby (e.g. Genoa, Gipsy Point, Cann River area)</em>
+                </span>
+              </label>
+              <label class="connection-option">
+                <input type="checkbox" name="Connection" id="conn-boat" value="boat_here">
+                <span>
+                  <strong>I boat here</strong>
+                  <em>Regularly use local waters (trailer, mooring, fishing, commercial, etc.)</em>
+                </span>
+              </label>
+              <label class="connection-option">
+                <input type="checkbox" name="Connection" id="conn-family" value="family_friends">
+                <span>
+                  <strong>Family or friends live or boat here</strong>
+                  <em>Holiday house, visitors, kids — still a stake in local safety</em>
+                </span>
+              </label>
+              <label class="connection-option">
+                <input type="checkbox" name="Connection" id="conn-interested" value="interested">
+                <span>
+                  <strong>Just following / interested</strong>
+                  <em>No strong local tie — still watching the issue</em>
+                </span>
+              </label>
+              <label class="connection-option">
+                <input type="checkbox" name="Connection" id="conn-experience" value="msar_experience">
+                <span>
+                  <strong>Marine rescue / emergency experience</strong>
+                  <em>Coxswain, crew, SES, Lifesaving, first aid, or similar</em>
+                </span>
+              </label>
+            </fieldset>
+
             <fieldset class="intent-fieldset">
               <legend>Where I stand</legend>
               <label class="intent-option">
@@ -304,7 +343,7 @@
               </button>
             </div>
             <p class="form-privacy">
-              Public list = <strong>Alias + position only</strong>.
+              Public list = <strong>Alias + position + connection tags</strong> (not your email).
               You may be emailed by the project
               (<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>);
               the email list is <strong>not released to anyone</strong>.
@@ -364,8 +403,8 @@
       <div class="section-header">
         <h2>Community voices</h2>
         <p>
-          Public list shows <strong>Alias + position only</strong>. Emails never appear and are
-          not released. Includes local-management support and “fine as-is”.
+          Public list shows <strong>Alias + position + connection tags</strong>. Emails never appear
+          and are not released. Includes local-management support and “fine as-is”.
         </p>
       </div>
       <div class="card voices-card">
@@ -536,6 +575,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=10"></script>
+  <script src="main.js?v=11"></script>
 </body>
 </html>

@@ -157,6 +157,21 @@
         return;
       }
 
+      const connection = [];
+      document.querySelectorAll('input[name="Connection"]:checked').forEach(
+        function (el) {
+          if (el.value) connection.push(el.value);
+        }
+      );
+      if (!connection.length) {
+        feedbackDiv.textContent =
+          "Please tick at least one connection (live here, boat here, etc.).";
+        feedbackDiv.className = "error";
+        const first = document.getElementById("conn-live");
+        first && first.focus();
+        return;
+      }
+
       const roles = [];
       ["Crew", "Skipper", "Radio", "Admin", "General"].forEach(function (id) {
         const el = document.getElementById(id);
@@ -169,6 +184,7 @@
         email: email,
         intent: selectedIntent(),
         public: true,
+        connection: connection,
         roles: roles,
         other: otherEl ? otherEl.value.trim() : "",
         comments: commentsEl ? commentsEl.value.trim() : "",
@@ -289,10 +305,15 @@
       if (!row) return;
       row.querySelector(".voice-name").textContent = e.alias || e.name;
       row.querySelector(".voice-badge").textContent = e.intent_label;
-      var roles =
-        e.roles && e.roles.length ? "Roles: " + e.roles.join(", ") + " · " : "";
-      row.querySelector(".voice-meta").textContent =
-        roles + (e.date ? e.date : "");
+      var parts = [];
+      if (e.connection_labels && e.connection_labels.length) {
+        parts.push(e.connection_labels.join(" · "));
+      }
+      if (e.roles && e.roles.length) {
+        parts.push("Roles: " + e.roles.join(", "));
+      }
+      if (e.date) parts.push(e.date);
+      row.querySelector(".voice-meta").textContent = parts.join(" · ");
     });
   }
 

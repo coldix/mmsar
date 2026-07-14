@@ -72,6 +72,28 @@ foreach ($list as $row) {
     }
     $roles = array_values(array_filter(array_map('strval', $roles)));
 
+    $connLabels = $row['connection_labels'] ?? [];
+    if (!is_array($connLabels) || count($connLabels) === 0) {
+        // Rebuild short labels from keys if needed
+        $map = [
+            'live_here'       => 'Lives here',
+            'boat_here'       => 'Boats here',
+            'family_friends'  => 'Family/friends live or boat here',
+            'interested'      => 'Following / interested',
+            'msar_experience' => 'Marine rescue / emergency experience',
+        ];
+        $connLabels = [];
+        $keys = $row['connection'] ?? [];
+        if (is_array($keys)) {
+            foreach ($keys as $k) {
+                if (isset($map[$k])) {
+                    $connLabels[] = $map[$k];
+                }
+            }
+        }
+    }
+    $connLabels = array_values(array_filter(array_map('strval', $connLabels)));
+
     $date = (string) ($row['received_at'] ?? '');
     if ($date !== '') {
         try {
@@ -83,12 +105,14 @@ foreach ($list as $row) {
     }
 
     $entries[] = [
-        'alias'        => $alias,
-        'name'         => $alias, // backward compatible for front end
-        'intent'       => $intent,
-        'intent_label' => $labels[$intent] ?? $intent,
-        'roles'        => $roles,
-        'date'         => $date,
+        'alias'              => $alias,
+        'name'               => $alias, // backward compatible for front end
+        'intent'             => $intent,
+        'intent_label'       => $labels[$intent] ?? $intent,
+        'connection'         => $row['connection'] ?? [],
+        'connection_labels'  => $connLabels,
+        'roles'              => $roles,
+        'date'               => $date,
     ];
 }
 

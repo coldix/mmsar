@@ -103,9 +103,38 @@ if (!in_array($intent, $allowedIntents, true)) {
 $public = true;
 $name = $alias;
 
+// Connection to place (multi-select, at least one)
+$connectionLabels = [
+    'live_here'       => 'Lives here',
+    'boat_here'       => 'Boats here',
+    'family_friends'  => 'Family/friends live or boat here',
+    'interested'      => 'Following / interested',
+    'msar_experience' => 'Marine rescue / emergency experience',
+];
+$connection = [];
+if (!empty($in['connection']) && is_array($in['connection'])) {
+    foreach ($in['connection'] as $c) {
+        $c = s((string) $c, 40);
+        if (isset($connectionLabels[$c])) {
+            $connection[] = $c;
+        }
+    }
+}
+// Also accept individual flags
+foreach (array_keys($connectionLabels) as $key) {
+    $v = $in[$key] ?? '0';
+    if (($v === '1' || $v === 1 || $v === true || $v === 'on') && !in_array($key, $connection, true)) {
+        $connection[] = $key;
+    }
+}
+$connection = array_values(array_unique($connection));
+if (count($connection) === 0) {
+    http_response_code(400);
+    echo json_encode(['result' => 'error', 'message' => 'Please tick at least one connection (live here, boat here, etc.).']);
+    exit;
+}
+
 $roles = [];
-$roleKeys = ['crew' => 'Crew', 'skipper' => 'Skipper', 'radio' => 'Radio', 'admin' => 'Admin', 'general' => 'General',
-    'Crew' => 'Crew', 'Skipper' => 'Skipper', 'Radio' => 'Radio', 'Admin' => 'Admin', 'General' => 'General'];
 if (!empty($in['roles']) && is_array($in['roles'])) {
     foreach ($in['roles'] as $r) {
         $r = s((string) $r, 40);
@@ -126,19 +155,26 @@ $roles = array_values(array_unique($roles));
 $other    = s($in['other'] ?? $in['Other'] ?? '', 300);
 $comments = s($in['comments'] ?? $in['Comments'] ?? '', 2000);
 
+$connectionShort = [];
+foreach ($connection as $c) {
+    $connectionShort[] = $connectionLabels[$c];
+}
+
 $record = [
-    'id'          => bin2hex(random_bytes(8)),
-    'received_at' => gmdate('c'),
-    'alias'       => $alias,
-    'name'        => $name, // same as alias — public display only
-    'email'       => $email,
-    'intent'      => $intent,
-    'public'      => true,
-    'roles'       => $roles,
-    'other'       => $other,
-    'comments'    => $comments,
-    'ip'          => $_SERVER['REMOTE_ADDR'] ?? '',
-    'user_agent'  => s($_SERVER['HTTP_USER_AGENT'] ?? '', 300),
+    'id'                  => bin2hex(random_bytes(8)),
+    'received_at'         => gmdate('c'),
+    'alias'               => $alias,
+    'name'                => $name, // same as alias — public display only
+    'email'               => $email,
+    'intent'              => $intent,
+    'public'              => true,
+    'connection'          => $connection,
+    'connection_labels'   => $connectionShort,
+    'roles'               => $roles,
+    'other'               => $other,
+    'comments'            => $comments,
+    'ip'                  => $_SERVER['REMOTE_ADDR'] ?? '',
+    'user_agent'          => s($_SERVER['HTTP_USER_AGENT'] ?? '', 300),
 ];
 
 // ─── Ensure data dir + file ───────────────────────────────
@@ -232,9 +268,10 @@ $body = "New MMSAR website submission\n";
 $body .= "============================\n\n";
 $body .= "When:    " . $record['received_at'] . " (UTC)\n";
 $body .= "Intent:  " . $intentLabel . "\n";
-$body .= "Public:  Yes — Alias only on public list\n";
+$body .= "Public:  Yes — Alias + connection tags on public list\n";
 $body .= "Alias:   " . $alias . "\n";
 $body .= "Email:   " . $email . " (private — not released)\n";
+$body .= "Connect: " . implode(', ', $connectionShort) . "\n";
 $body .= "Roles:   " . $rolesText . "\n";
 $body .= "Other:   " . ($other !== '' ? $other : '—') . "\n";
 $body .= "Comment: " . ($comments !== '' ? $comments : '—') . "\n";
