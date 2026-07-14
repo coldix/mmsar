@@ -61,19 +61,25 @@ Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/).
 
 Or open `index.html` directly in a browser (form posts still need network access to Google Apps Script).
 
-## Deploy
+## Deploy (Hostinger)
 
-Upload the site files to the web root for **mmsar.au** and **mmsar.org.au** (same content on both domains is fine).
+SSH/rsync to Hostinger (same account as other Dixon sites):
 
-Typical publish set:
+```bash
+./deploy.sh
+```
 
-- `index.html`, `thank-you.html`
-- `styles.css`, `main.js`
-- `favicon.ico`, `apple-touch-icon.png`
-- `robots.txt`, `sitemap.xml`
-- `images/` (entire folder)
+Requires `~/.ssh/gha_hostinger` (`chmod 600`).
 
-Do **not** publish `.git/`, this README, or local zip archives unless you want them public.
+| Setting | Value |
+|---------|--------|
+| Host | `46.202.196.151` port `65002` |
+| User | `u566466219` |
+| Path | `domains/mmsar.au/public_html/` |
+
+`deploy.sh` syncs site files and skips `.git`, README, zips, and server paths (`.well-known`, `cgi-bin`, `.private`, `docs`).
+
+Hard-refresh the browser after deploy if CSS looks cached.
 
 ## Form backend
 
