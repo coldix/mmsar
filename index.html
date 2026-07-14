@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body class="dark">
 
@@ -139,8 +139,13 @@
             are used as they were meant to be.
           </p>
           <p>
-            This approach aligns with recommendations from the 2014 Victorian Parliamentary Inquiry,
-            which called for a modern, state-integrated rescue model to better support volunteers
+            This approach aligns with recommendations from the
+            <a href="#inquiry" class="text-link">2014 Victorian Parliamentary Inquiry</a>
+            — read the
+            <a href="images/Vic-MSAR-Reform.pdf" target="_blank" rel="noopener noreferrer" class="text-link">full PDF report</a>
+            or
+            <a href="#inquiry" class="text-link" onclick="openPdfModal(); return false;">open it on this page</a>
+            — which called for a modern, state-integrated rescue model to better support volunteers
             and regional safety.
           </p>
           <div class="status-pills" style="margin-top: 1.25rem;">
@@ -245,24 +250,51 @@
       </div>
     </section>
 
-    <!-- Background reading -->
-    <section class="section" id="reading" style="padding-top: 0.5rem;">
-      <div class="card reading-card">
+    <!-- 2014 Parliamentary Inquiry PDF -->
+    <section class="section" id="inquiry" style="padding-top: 0.5rem;">
+      <div class="section-header">
+        <h2>2014 Victorian Parliamentary Inquiry</h2>
+        <p>
+          Official background on reforming marine rescue in Victoria — read on this page or
+          download the PDF (27 pages).
+        </p>
+      </div>
+      <div class="card reading-card inquiry-card">
+        <div class="inquiry-icon" aria-hidden="true">
+          <i class="fas fa-file-pdf"></i>
+        </div>
         <div class="text">
-          <h3>Background reading</h3>
+          <h3>Vic MSAR Reform Report</h3>
           <p>
-            Reforming Marine Rescue in Victoria — independent review context supporting a modern,
-            integrated volunteer model.
+            <strong>2014 Victorian Parliamentary Inquiry</strong> — recommendations for a modern,
+            state-integrated volunteer marine rescue model. File:
+            <code>Vic-MSAR-Reform.pdf</code>
+          </p>
+          <p class="inquiry-meta">
+            <span><i class="fas fa-file-alt" aria-hidden="true"></i> PDF · 27 pages</span>
+            <span><i class="fas fa-download" aria-hidden="true"></i> ~500&nbsp;KB</span>
           </p>
         </div>
-        <a
-          href="images/Vic-MSAR-Reform.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-secondary"
-        >
-          <i class="fas fa-file-pdf" aria-hidden="true"></i> Vic MSAR Reform Report
-        </a>
+        <div class="inquiry-actions">
+          <button type="button" class="btn btn-primary" onclick="openPdfModal()">
+            <i class="fas fa-book-open" aria-hidden="true"></i> Read on screen
+          </button>
+          <a
+            href="images/Vic-MSAR-Reform.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-secondary"
+          >
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Open in new tab
+          </a>
+          <a
+            href="images/Vic-MSAR-Reform.pdf"
+            download="Vic-MSAR-Reform.pdf"
+            class="btn btn-ghost"
+          >
+            <i class="fas fa-download" aria-hidden="true"></i> Download PDF
+          </a>
+        </div>
       </div>
     </section>
   </main>
@@ -289,6 +321,54 @@
       </p>
     </div>
   </footer>
+
+  <!-- PDF reader modal -->
+  <div
+    id="pdf-modal"
+    class="modal-overlay"
+    onclick="if (event.target === this) closePdfModal()"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="pdf-modal-title"
+  >
+    <div class="modal-content pdf-modal-content" onclick="event.stopPropagation()">
+      <button type="button" class="modal-close" onclick="closePdfModal()" aria-label="Close PDF reader">×</button>
+      <div class="pdf-modal-header">
+        <h2 id="pdf-modal-title">2014 Victorian Parliamentary Inquiry</h2>
+        <p class="modal-subtitle">Vic MSAR Reform Report — scroll to read, or download a copy.</p>
+        <div class="pdf-modal-toolbar">
+          <a
+            href="images/Vic-MSAR-Reform.pdf"
+            download="Vic-MSAR-Reform.pdf"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-download" aria-hidden="true"></i> Download PDF
+          </a>
+          <a
+            href="images/Vic-MSAR-Reform.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-secondary"
+          >
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Open full page
+          </a>
+        </div>
+      </div>
+      <div class="pdf-frame-wrap">
+        <iframe
+          id="pdf-frame"
+          title="Vic MSAR Reform Report PDF"
+          src="about:blank"
+        ></iframe>
+        <p class="pdf-fallback">
+          If the document does not appear,
+          <a href="images/Vic-MSAR-Reform.pdf" target="_blank" rel="noopener noreferrer">open the PDF</a>
+          or
+          <a href="images/Vic-MSAR-Reform.pdf" download="Vic-MSAR-Reform.pdf">download it</a>.
+        </p>
+      </div>
+    </div>
+  </div>
 
   <!-- Form modal -->
   <div
@@ -420,6 +500,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=2"></script>
+  <script src="main.js?v=3"></script>
 </body>
 </html>

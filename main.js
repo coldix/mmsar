@@ -95,9 +95,39 @@
     });
   }
 
-  // Close on Escape
+  // ─── PDF reader modal ────────────────────────────────────
+  const PDF_URL = "images/Vic-MSAR-Reform.pdf";
+  const pdfModal = document.getElementById("pdf-modal");
+  const pdfFrame = document.getElementById("pdf-frame");
+
+  window.openPdfModal = function () {
+    if (!pdfModal) return;
+    if (pdfFrame) {
+      // FitH helps browsers that support PDF fragment params
+      pdfFrame.src = PDF_URL + "#view=FitH";
+    }
+    pdfModal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  };
+
+  window.closePdfModal = function () {
+    if (!pdfModal) return;
+    pdfModal.classList.remove("is-open");
+    // Unload PDF to free memory when closed
+    if (pdfFrame) pdfFrame.src = "about:blank";
+    if (!modal || !modal.classList.contains("is-open")) {
+      document.body.style.overflow = "";
+    }
+  };
+
+  // Close on Escape (form or PDF)
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && modal && modal.classList.contains("is-open")) {
+    if (e.key !== "Escape") return;
+    if (pdfModal && pdfModal.classList.contains("is-open")) {
+      window.closePdfModal();
+      return;
+    }
+    if (modal && modal.classList.contains("is-open")) {
       window.closeFormModal();
     }
   });
