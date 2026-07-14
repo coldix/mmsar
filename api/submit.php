@@ -339,10 +339,10 @@ fclose($fp);
 
 // ─── Email notification ───────────────────────────────────
 $intentLabel = [
-    'support'    => 'Supports local management',
-    'volunteer'  => 'Supports local management and may be willing to help',
-    'informed'   => 'Undecided / stay informed',
-    'status_quo' => 'Satisfied with how it is run now',
+    'support'    => 'I support local management',
+    'volunteer'  => 'I support local management and may be willing to help',
+    'status_quo' => 'I am satisfied with how it is run now',
+    'informed'   => 'I am undecided and would like to stay informed',
 ][$intent] ?? $intent;
 
 $rolesText = $roles ? implode(', ', $roles) : '—';

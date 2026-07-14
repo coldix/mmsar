@@ -1012,10 +1012,13 @@ body.light .connection-option strong {
   border: 1px solid var(--glass-border);
   background: rgba(0, 0, 0, 0.2);
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
+  line-height: 1.25;
+  max-width: 100%;
+  text-align: left;
 }
 .voices-filter:hover {
   border-color: rgba(255, 255, 255, 0.3);
@@ -1640,8 +1643,14 @@ body.light .media-card .caption { color: var(--text-muted); }
     gap: 0.35rem;
   }
   .voices-filter {
-    font-size: 0.78rem;
-    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.55rem;
+  }
+  .voice-badge {
+    white-space: normal;
+    text-align: left;
+    line-height: 1.25;
+    max-width: 100%;
   }
   .voice-row {
     grid-template-columns: 1fr;

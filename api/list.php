@@ -17,11 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 $dataFile = dirname(__DIR__) . '/data/submissions.json';
 
+// Badge text matches form option wording (same phrasing; list uses these as position labels)
 $labels = [
-    'support'    => 'Supports local management',
-    'volunteer'  => 'Supports local + may help',
-    'informed'   => 'Undecided / stay informed',
-    'status_quo' => 'Satisfied with current arrangements',
+    'support'    => 'I support local management',
+    'volunteer'  => 'I support local management and may be willing to help',
+    'status_quo' => 'I am satisfied with how it is run now',
+    'informed'   => 'I am undecided and would like to stay informed',
 ];
 
 $list = [];
