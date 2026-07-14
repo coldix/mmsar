@@ -595,14 +595,16 @@ h1, h2, h3, h4 {
   flex-direction: column;
   background: #0a1628;
   min-height: 0;
+  height: 100%;
+  align-self: stretch;
 }
-.vision-kuula iframe {
+/* Tall 360 — fills the vision column frame */
+.vision-kuula .ku-embed {
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 280px;
-  aspect-ratio: 4 / 3;
-  max-height: 420px;
+  flex: 1 1 auto;
+  min-height: min(70vh, 640px);
+  height: min(70vh, 640px);
   border: 0;
   background: #000;
 }
@@ -613,6 +615,19 @@ h1, h2, h3, h4 {
   color: var(--text-muted);
   background: rgba(0, 0, 0, 0.35);
   border-top: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .vision-kuula .ku-embed {
+    min-height: min(55vh, 480px);
+    height: min(55vh, 480px);
+  }
+}
+@media (max-width: 640px) {
+  .vision-kuula .ku-embed {
+    min-height: min(50vh, 380px);
+    height: min(50vh, 380px);
+  }
 }
 .status-pills {
   display: flex;
