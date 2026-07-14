@@ -590,6 +590,30 @@ h1, h2, h3, h4 {
   object-position: center 45%;
   filter: contrast(1.04) saturate(1.05);
 }
+.vision-kuula {
+  display: flex;
+  flex-direction: column;
+  background: #0a1628;
+  min-height: 0;
+}
+.vision-kuula iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 280px;
+  aspect-ratio: 4 / 3;
+  max-height: 420px;
+  border: 0;
+  background: #000;
+}
+.vision-kuula-caption {
+  margin: 0;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid var(--glass-border);
+}
 .status-pills {
   display: flex;
   flex-wrap: wrap;
