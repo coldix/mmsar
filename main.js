@@ -158,11 +158,13 @@
       }
 
       const connection = [];
-      document.querySelectorAll('input[name="Connection"]:checked').forEach(
-        function (el) {
+      document
+        .querySelectorAll(
+          'input[name="connection[]"]:checked, input[name="Connection"]:checked'
+        )
+        .forEach(function (el) {
           if (el.value) connection.push(el.value);
-        }
-      );
+        });
       if (!connection.length) {
         feedbackDiv.textContent =
           "Please tick at least one connection (live here, boat here, etc.).";
@@ -199,7 +201,10 @@
 
       fetch(SUBMIT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify(payload),
       })
         .then(function (response) {

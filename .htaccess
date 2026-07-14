@@ -1,19 +1,14 @@
 # MMSAR — single preferred origin: https://mmsar.au/
-# Stops duplicate indexing of www + mmsar.org.au (same content)
+# All host/scheme variants 301 → https://mmsar.au/ (path + query preserved)
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # www.mmsar.au, mmsar.org.au, www.mmsar.org.au → https://mmsar.au/
-  RewriteCond %{HTTP_HOST} ^(www\.)?mmsar\.org\.au$ [NC,OR]
-  RewriteCond %{HTTP_HOST} ^www\.mmsar\.au$ [NC]
-  RewriteRule ^ https://mmsar.au%{REQUEST_URI} [L,R=301]
-
-  # http://mmsar.au → https://mmsar.au (if edge does not already)
-  RewriteCond %{HTTP_HOST} ^mmsar\.au$ [NC]
+  # Any host other than apex mmsar.au, OR non-HTTPS → preferred origin
+  RewriteCond %{HTTP_HOST} !^mmsar\.au$ [NC,OR]
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://mmsar.au%{REQUEST_URI} [L,R=301]
+  RewriteRule ^(.*)$ https://mmsar.au/$1 [R=301,L,QSA]
 </IfModule>
 
 <IfModule mod_headers.c>

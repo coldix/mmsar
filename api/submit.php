@@ -52,6 +52,11 @@ if (stripos($contentType, 'application/json') !== false || (isset($raw[0]) && ($
 
 // Honeypot (bots fill hidden "website" field)
 if (!empty($in['website'])) {
+    $ct = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
+    if (stripos($ct, 'application/json') === false) {
+        header('Location: /thank-you.html', true, 303);
+        exit;
+    }
     echo json_encode(['result' => 'success']); // fake OK
     exit;
 }
@@ -290,6 +295,16 @@ $headers = [
 
 // mail() may be filtered on some hosts; failure still keeps the JSON record
 $mailed = @mail(NOTIFY_TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+
+// JSON clients (fetch from main.js); HTML form no-JS → thank-you page
+$isJsonClient = stripos($contentType, 'application/json') !== false
+    || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+    || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+
+if (!$isJsonClient) {
+    header('Location: /thank-you.html', true, 303);
+    exit;
+}
 
 echo json_encode([
     'result'  => 'success',
