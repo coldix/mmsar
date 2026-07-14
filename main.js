@@ -47,7 +47,7 @@
 
   function selectedIntent() {
     const el = document.querySelector('input[name="Intent"]:checked');
-    return el ? el.value : "support";
+    return el ? el.value : "";
   }
 
   function syncIntentUI() {
@@ -245,6 +245,16 @@
         return;
       }
 
+      const intent = selectedIntent();
+      if (!intent) {
+        feedbackDiv.textContent =
+          "Please select where you stand (an active choice is required).";
+        feedbackDiv.className = "error";
+        const firstIntent = document.getElementById("intent-support");
+        firstIntent && firstIntent.focus();
+        return;
+      }
+
       const roles = [];
       ["Crew", "Skipper", "Radio", "Admin", "General"].forEach(function (id) {
         const el = document.getElementById(id);
@@ -255,7 +265,7 @@
         alias: alias,
         name: alias,
         email: email,
-        intent: selectedIntent(),
+        intent: intent,
         public: true,
         connection: connection,
         roles: roles,
@@ -266,7 +276,7 @@
 
       submitButton.disabled = true;
       submitButton.innerHTML =
-        '<i class="fas fa-spinner fa-spin"></i> Publishing…';
+        '<i class="fas fa-spinner fa-spin"></i> Sending…';
       feedbackDiv.textContent = "";
       feedbackDiv.className = "";
 
@@ -302,9 +312,9 @@
           submitButton.style.display = "none";
 
           feedbackDiv.innerHTML =
-            "<strong>Thank you — recorded.</strong><br>" +
-            "Your <em>Alias</em> is on the public list. Email stays private and is not released. " +
-            "Share the winter push if you can.";
+            "<strong>Thank you — your response has been recorded.</strong><br>" +
+            "Your <em>Alias</em> appears on the public list. Email stays private and is not released. " +
+            "All views help build a clearer picture of local opinion.";
           feedbackDiv.className = "success";
 
           loadVoices();
@@ -328,7 +338,7 @@
           feedbackDiv.className = "error";
           submitButton.disabled = false;
           submitButton.innerHTML =
-            '<i class="fas fa-check"></i> Publish my position';
+            '<i class="fas fa-check"></i> Add my response';
         });
     });
   }
@@ -355,7 +365,7 @@
 
     if (!rows.length) {
       box.innerHTML =
-        '<p class="voices-empty">No public names yet — be the first. Winter starts at zero.</p>';
+        '<p class="voices-empty">No public responses yet — be the first to add yours.</p>';
       return;
     }
 

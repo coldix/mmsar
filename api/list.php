@@ -19,9 +19,9 @@ $dataFile = dirname(__DIR__) . '/data/submissions.json';
 
 $labels = [
     'support'    => 'Supports local management',
-    'volunteer'  => 'Supports local + offers to help',
-    'informed'   => 'Stay informed',
-    'status_quo' => 'Fine with how it is run now',
+    'volunteer'  => 'Supports local + may help',
+    'informed'   => 'Undecided / stay informed',
+    'status_quo' => 'Satisfied with current arrangements',
 ];
 
 $list = [];

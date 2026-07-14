@@ -175,10 +175,12 @@ if (alias_is_offensive($alias)) {
     exit;
 }
 
-$intent = s($in['intent'] ?? $in['Intent'] ?? 'support', 40);
+$intent = s($in['intent'] ?? $in['Intent'] ?? '', 40);
 $allowedIntents = ['support', 'volunteer', 'informed', 'status_quo'];
 if (!in_array($intent, $allowedIntents, true)) {
-    $intent = 'support';
+    http_response_code(400);
+    echo json_encode(['result' => 'error', 'message' => 'Please select where you stand.']);
+    exit;
 }
 
 // Always public as Alias — emails never published, contact list not released
@@ -338,9 +340,9 @@ fclose($fp);
 // ─── Email notification ───────────────────────────────────
 $intentLabel = [
     'support'    => 'Supports local management',
-    'volunteer'  => 'Supports local management and offers to help',
-    'informed'   => 'Stay informed',
-    'status_quo' => 'Fine with how it is run now',
+    'volunteer'  => 'Supports local management and may be willing to help',
+    'informed'   => 'Undecided / stay informed',
+    'status_quo' => 'Satisfied with how it is run now',
 ][$intent] ?? $intent;
 
 $rolesText = $roles ? implode(', ', $roles) : '—';
