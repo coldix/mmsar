@@ -81,9 +81,20 @@ Requires `~/.ssh/gha_hostinger` (`chmod 600`).
 
 Hard-refresh the browser after deploy if CSS looks cached.
 
-## Form backend
+## Form backend (JSON + email)
 
-Survey and pledge submissions POST JSON to a Google Apps Script web app URL defined in `main.js` (`WEB_APP_URL`). Field names must stay in sync with the script and spreadsheet columns.
+Simple Hostinger PHP endpoint — no Google Sheet required.
+
+| Piece | Path |
+|--------|------|
+| Endpoint | `api/submit.php` |
+| Storage | `data/submissions.json` (web-blocked by `.htaccess`) |
+| Notify | Email to **mallacootamsar@gmail.com** |
+| Front end | `#support` form → `main.js` posts JSON |
+
+Each submission is one object in the JSON array (`name`, `email`, `intent`, `roles`, `comments`, timestamp). The same payload is emailed to the project Gmail.
+
+Download `data/submissions.json` via File Manager or SSH when you want a backup or to import into a spreadsheet.
 
 ## Accessibility & motion
 

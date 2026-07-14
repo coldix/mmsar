@@ -1,4 +1,4 @@
-/* MMSAR — theme, support form, PDF reader */
+/* MMSAR — theme, support form (JSON + email), PDF reader */
 
 (function () {
   "use strict";
@@ -36,11 +36,8 @@
     applyTheme(next);
   };
 
-  // ─── Support form (simple — maps to existing Apps Script sheet) ───
-  // Keep field names: Email, Name, Phone, Address, Survey, Pledge,
-  // Connection, Preference, Crew, Skipper, Radio, Admin, General, Other, Amount, Comments
-  const WEB_APP_URL =
-    "https://script.google.com/macros/s/AKfycbzcIuAmizvshrZm5l_vHBrs-tPMI2LrG1Ozcpl-pQ6pRm07Lr41QVpXs4GO8darkisLfQ/exec";
+  // ─── Support form → api/submit.php ───────────────────────
+  const SUBMIT_URL = "api/submit.php";
 
   const form = document.getElementById("support-form");
   const submitButton = document.getElementById("submit-button");
@@ -58,34 +55,6 @@
     if (volunteerExtra) {
       volunteerExtra.style.display = intent === "volunteer" ? "block" : "none";
     }
-
-    // Hidden fields for legacy sheet columns
-    const survey = document.getElementById("Survey");
-    const pledge = document.getElementById("Pledge");
-    const connection = document.getElementById("Connection");
-    const preference = document.getElementById("Preference");
-    const amount = document.getElementById("Amount");
-
-    if (intent === "support") {
-      if (survey) survey.value = "0";
-      if (pledge) pledge.value = "1";
-      if (connection) connection.value = "Community member with an interest";
-      if (preference) preference.value = "A new, locally-managed MSAR unit";
-      if (amount) amount.value = "";
-    } else if (intent === "volunteer") {
-      if (survey) survey.value = "1";
-      if (pledge) pledge.value = "1";
-      if (connection) connection.value = "Interested in volunteering in the future";
-      if (preference) preference.value = "A new, locally-managed MSAR unit";
-      if (amount) amount.value = "$time";
-    } else {
-      // stay informed
-      if (survey) survey.value = "0";
-      if (pledge) pledge.value = "1";
-      if (connection) connection.value = "Community member with an interest";
-      if (preference) preference.value = "I have no position";
-      if (amount) amount.value = "";
-    }
   }
 
   intentRadios.forEach(function (radio) {
@@ -93,7 +62,6 @@
   });
   syncIntentUI();
 
-  // Copy Facebook post text
   const copyShareBtn = document.getElementById("copy-share-btn");
   const shareBlurb = document.getElementById("share-blurb");
   if (copyShareBtn && shareBlurb) {
@@ -110,7 +78,6 @@
           }, 2500);
         })
         .catch(function () {
-          // Fallback select
           const range = document.createRange();
           range.selectNodeContents(shareBlurb);
           const sel = window.getSelection();
@@ -125,15 +92,35 @@
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      syncIntentUI();
 
-      const email = document.getElementById("Email");
-      if (!email || !email.value.trim()) {
-        feedbackDiv.textContent = "Please enter your email so we can record your support.";
+      const emailEl = document.getElementById("Email");
+      const nameEl = document.getElementById("Name");
+      const commentsEl = document.getElementById("Comments");
+      const otherEl = document.getElementById("Other");
+
+      if (!emailEl || !emailEl.value.trim()) {
+        feedbackDiv.textContent =
+          "Please enter your email so we can record your support.";
         feedbackDiv.className = "error";
-        email && email.focus();
+        emailEl && emailEl.focus();
         return;
       }
+
+      const roles = [];
+      ["Crew", "Skipper", "Radio", "Admin", "General"].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el && el.checked) roles.push(id);
+      });
+
+      const payload = {
+        name: nameEl ? nameEl.value.trim() : "",
+        email: emailEl.value.trim(),
+        intent: selectedIntent(),
+        roles: roles,
+        other: otherEl ? otherEl.value.trim() : "",
+        comments: commentsEl ? commentsEl.value.trim() : "",
+        website: (document.getElementById("website") || {}).value || "",
+      };
 
       submitButton.disabled = true;
       submitButton.innerHTML =
@@ -141,54 +128,26 @@
       feedbackDiv.textContent = "";
       feedbackDiv.className = "";
 
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      // Intent is UI-only; sheet does not need it, but keep in Comments prefix if useful
-      const intent = selectedIntent();
-      delete data.Intent;
-      const intentLabel =
-        intent === "volunteer"
-          ? "[Volunteer offer] "
-          : intent === "informed"
-            ? "[Stay informed] "
-            : "[Supporter] ";
-      data.Comments = intentLabel + (data.Comments || "").trim();
-
-      ["Survey", "Pledge", "Crew", "Skipper", "Radio", "Admin", "General"].forEach(
-        function (name) {
-          const el = document.getElementById(name);
-          if (!el) {
-            data[name] = "0";
-            return;
-          }
-          if (el.type === "checkbox") {
-            data[name] = el.checked ? "1" : "0";
-          } else {
-            data[name] = el.value === "1" || el.value === 1 ? "1" : String(el.value || "0");
-          }
-        }
-      );
-
-      // Force numeric-like flags for sheet
-      data.Survey = document.getElementById("Survey").value === "1" ? "1" : "0";
-      data.Pledge = document.getElementById("Pledge").value === "1" ? "1" : "0";
-
-      fetch(WEB_APP_URL, {
+      fetch(SUBMIT_URL, {
         method: "POST",
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       })
         .then(function (response) {
-          return response.text();
+          return response.text().then(function (text) {
+            var result;
+            try {
+              result = JSON.parse(text);
+            } catch (err) {
+              throw new Error("Bad server response");
+            }
+            if (!response.ok || result.result !== "success") {
+              throw new Error(result.message || "Submit failed");
+            }
+            return result;
+          });
         })
-        .then(function (text) {
-          const result = JSON.parse(text);
-          if (result.result !== "success") {
-            throw new Error(
-              result.message || "An unknown error occurred on the server."
-            );
-          }
-
+        .then(function () {
           form.querySelectorAll("input, textarea, button, fieldset").forEach(
             function (el) {
               if (el.id === "submit-button") return;
@@ -199,7 +158,7 @@
 
           feedbackDiv.innerHTML =
             "<strong>Thank you — you’re on the list.</strong><br>" +
-            "If you can, share the post text with one boat person who should see this.";
+            "We emailed the project inbox. If you can, share this with one boat person.";
           feedbackDiv.className = "success";
 
           const again = document.createElement("button");
@@ -215,7 +174,7 @@
         .catch(function (error) {
           console.error("Submission Error:", error);
           feedbackDiv.innerHTML =
-            "Something went wrong sending the form. Please email " +
+            "Something went wrong saving the form. Please email " +
             '<a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a> ' +
             "instead — we still want your name.";
           feedbackDiv.className = "error";
@@ -261,7 +220,6 @@
     }
   }
 
-  // ─── Init ────────────────────────────────────────────────
   window.addEventListener("DOMContentLoaded", function () {
     const theme = localStorage.getItem("theme") || "dark";
     applyTheme(theme);
@@ -274,8 +232,10 @@
     }
 
     if (location.hash === "#support") {
-      // Allow ?volunteer=1 deep link from Facebook
-      if (/[?&]volunteer=1/.test(location.search) || location.hash.indexOf("volunteer") !== -1) {
+      if (
+        /[?&]volunteer=1/.test(location.search) ||
+        location.hash.indexOf("volunteer") !== -1
+      ) {
         selectVolunteerIntent();
       }
     }

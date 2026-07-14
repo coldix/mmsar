@@ -775,6 +775,16 @@ h1, h2, h3, h4 {
 #form-feedback.error { color: #ff8c8c; }
 #form-feedback a { color: var(--cyan); }
 
+/* Honeypot — hidden from humans */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 body.light .support-stats .stat {
   background: rgba(255, 255, 255, 0.7);
 }

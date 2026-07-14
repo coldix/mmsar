@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body class="dark">
 
@@ -254,14 +254,11 @@
               <textarea id="Comments" name="Comments" rows="2" placeholder="One line is fine."></textarea>
             </div>
 
-            <!-- Mapped for existing Google Sheet / Apps Script -->
-            <input type="hidden" id="Survey" name="Survey" value="0">
-            <input type="hidden" id="Pledge" name="Pledge" value="1">
-            <input type="hidden" id="Phone" name="Phone" value="">
-            <input type="hidden" id="Address" name="Address" value="">
-            <input type="hidden" id="Connection" name="Connection" value="Community member with an interest">
-            <input type="hidden" id="Preference" name="Preference" value="A new, locally-managed MSAR unit">
-            <input type="hidden" id="Amount" name="Amount" value="">
+            <!-- Honeypot — leave empty (bots often fill this) -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="website">Website</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
 
             <div class="form-submit-wrap">
               <button type="submit" id="submit-button" class="btn btn-primary btn-block">
@@ -269,9 +266,9 @@
               </button>
             </div>
             <p class="form-privacy">
-              Goes to the project inbox
-              <a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>
-              — not shared as a public list. Not an operational rescue service.
+              Saved privately on this site and emailed to
+              <a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a>.
+              Not a public list. Not an operational rescue service.
             </p>
             <div id="form-feedback"></div>
           </form>
@@ -478,6 +475,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=6"></script>
+  <script src="main.js?v=7"></script>
 </body>
 </html>

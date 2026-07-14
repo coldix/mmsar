@@ -35,14 +35,25 @@ rsync -rlDv --progress --delete \
   --exclude='images/_preview*' \
   --exclude='images/*.original.*' \
   --exclude='images/*original*' \
+  --exclude='data/submissions.json' \
   ./ "${HOST}:${REMOTE}"
 
-# Apache needs world-readable files and executable dirs
+# Apache needs world-readable files and executable dirs;
+# data/ must be writable by PHP for submissions.json
 ssh -i "${KEY}" -p "${PORT}" -o IdentitiesOnly=yes "${HOST}" bash -s <<'REMOTE'
 DOC=/home/u566466219/domains/mmsar.au/public_html
 chmod 755 "$DOC"
 find "$DOC" -type d ! -path '*/.private*' -exec chmod 755 {} \;
 find "$DOC" -type f ! -path '*/.private*' -exec chmod 644 {} \;
+mkdir -p "$DOC/data" "$DOC/api"
+chmod 755 "$DOC/data" "$DOC/api"
+# Keep existing submissions if present; seed empty file if missing
+if [ ! -f "$DOC/data/submissions.json" ]; then
+  echo '[]' > "$DOC/data/submissions.json"
+fi
+chmod 644 "$DOC/data/submissions.json"
+# Ensure PHP can append (same account owns files on Hostinger)
+chmod 755 "$DOC/data"
 REMOTE
 
 echo "Done: https://mmsar.au/"

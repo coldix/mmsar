@@ -12,3 +12,8 @@ mmsar/
 images/_preview*
 images/*.original.*
 images/*original*
+
+# Live form data (may contain personal emails) — keep empty template only
+data/submissions.json
+!data/.htaccess
+!data/README.md
