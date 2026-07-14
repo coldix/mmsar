@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Form data and API are not content pages
+Disallow: /data/
+Disallow: /api/
+
 Sitemap: https://mmsar.au/sitemap.xml

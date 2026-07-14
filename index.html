@@ -12,9 +12,37 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MMSAR — Proposal for Mallacoota Marine Search and Rescue</title>
-  <meta name="description" content="Proposal for locally managed Marine Search and Rescue in Mallacoota: $7m shared SES/Lifesaving/MSAR base, $2m MSAR assets, operating budget — 2014 inquiry issues still unaddressed.">
+  <title>MMSAR — Mallacoota Marine Search and Rescue Proposal (Local MSAR)</title>
+  <meta name="description" content="MMSAR is a community proposal for locally managed Marine Search and Rescue in Mallacoota, Victoria. $7m shared SES/Lifesaving/MSAR base, ~$2m MSAR assets, operating budget. Not an operational service — dial 000 in an emergency.">
+  <meta name="keywords" content="MMSAR, Mallacoota, marine search and rescue, MSAR, local marine rescue, Victoria, SES, Lifesaving, boat rescue">
+  <meta name="author" content="MMSAR — Mallacoota Marine Search and Rescue (proposed)">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#0a1628">
+  <meta name="geo.region" content="AU-VIC">
+  <meta name="geo.placename" content="Mallacoota">
+
+  <!-- Preferred domain (use on both mmsar.au and mmsar.org.au) -->
+  <link rel="canonical" href="https://mmsar.au/">
+  <link rel="alternate" href="https://mmsar.au/" hreflang="en-au">
+  <link rel="alternate" href="https://mmsar.au/" hreflang="x-default">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MMSAR">
+  <meta property="og:locale" content="en_AU">
+  <meta property="og:url" content="https://mmsar.au/">
+  <meta property="og:title" content="MMSAR — Local marine rescue proposal for Mallacoota">
+  <meta property="og:description" content="Proposal for locally managed Marine Search and Rescue. $7m shared emergency base, ~$2m MSAR assets in town. Not an operational service. Add your public position this winter.">
+  <meta property="og:image" content="https://mmsar.au/images/og-share.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MMSAR — Mallacoota Marine Search and Rescue proposal">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MMSAR — Local marine rescue proposal for Mallacoota">
+  <meta name="twitter:description" content="Community proposal for locally managed MSAR in Mallacoota. $7m shared base, ~$2m MSAR assets. Not operational — dial 000 in an emergency.">
+  <meta name="twitter:image" content="https://mmsar.au/images/og-share.jpg">
 
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="images/apple-touch-icon.png">
@@ -24,7 +52,111 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
+
+  <!-- Structured data for search + AI -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://mmsar.au/#organization",
+        "name": "MMSAR",
+        "alternateName": [
+          "Mallacoota Marine Search and Rescue",
+          "Mallacoota MSAR"
+        ],
+        "url": "https://mmsar.au/",
+        "email": "mallacootamsar@gmail.com",
+        "description": "Proposed community-led Marine Search and Rescue unit for Mallacoota, Victoria. Incorporated association; not yet an operational rescue service.",
+        "areaServed": {
+          "@type": "Place",
+          "name": "Mallacoota",
+          "containedInPlace": {
+            "@type": "AdministrativeArea",
+            "name": "Victoria, Australia"
+          }
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "mallacootamsar@gmail.com",
+          "contactType": "enquiries",
+          "availableLanguage": "English"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://mmsar.au/#website",
+        "url": "https://mmsar.au/",
+        "name": "MMSAR — Mallacoota Marine Search and Rescue Proposal",
+        "description": "Community proposal website for locally managed marine search and rescue in Mallacoota.",
+        "publisher": { "@id": "https://mmsar.au/#organization" },
+        "inLanguage": "en-AU"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://mmsar.au/#webpage",
+        "url": "https://mmsar.au/",
+        "name": "MMSAR — Proposal for Mallacoota Marine Search and Rescue",
+        "isPartOf": { "@id": "https://mmsar.au/#website" },
+        "about": { "@id": "https://mmsar.au/#organization" },
+        "description": "Proposal for a locally managed Marine Search and Rescue unit in Mallacoota, Victoria, including public community positions list.",
+        "inLanguage": "en-AU",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://mmsar.au/images/og-share.jpg"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://mmsar.au/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is MMSAR an operational marine rescue service?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. MMSAR is a proposal only and is not an active rescue service. In an emergency, dial 000 and ask for the Water Police."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is MMSAR proposing for Mallacoota?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A community-led volunteer Marine Search and Rescue unit under the official Victorian MSAR framework, managed locally rather than remotely, to make better use of public assets in Mallacoota."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What emergency facilities and assets are in Mallacoota?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Mallacoota has a new approximately $7 million emergency services base shared by SES, Lifesaving, and Marine Search and Rescue. MSAR has roughly $2 million worth of assets deployed in Mallacoota, with a budget to operate them."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the 2014 Victorian Parliamentary Inquiry say?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The 2014 Victorian Parliamentary Inquiry and related MSAR reform report (27 pages) identified issues with how marine rescue is organised and supported in Victoria. This proposal argues those issues have not been adequately addressed and that Mallacoota needs stronger local volunteer engagement."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How can I show my position on the public list?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use the form on https://mmsar.au/#support. Enter an Alias for the public list, a valid unique email (kept private and not released), your connection to the area, and where you stand — including support for local management, offering to help, or that you are fine with how it is run now."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="dark">
 
@@ -111,6 +243,53 @@
         <h2><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Important: Proposal Only</h2>
         <p>This website outlines a proposal to establish a new, locally managed marine search and rescue unit.</p>
         <p><strong>MMSAR is not an active service.</strong> In an emergency, dial <strong>000</strong> and ask for the Water Police.</p>
+      </div>
+    </section>
+
+    <!-- At a glance — dense facts for people + search/AI -->
+    <section class="section" id="about" style="padding-top: 1.5rem; padding-bottom: 0;" aria-labelledby="facts-heading">
+      <div class="card facts-card">
+        <h2 id="facts-heading">MMSAR at a glance</h2>
+        <p class="facts-lead">
+          <strong>MMSAR (Mallacoota Marine Search and Rescue)</strong> is a proposed community-led
+          volunteer marine rescue unit for Mallacoota, Victoria, Australia. It is registered as an
+          incorporated association and is <strong>not yet operational</strong>. This website is a
+          community proposal and public discussion tool — not a dispatch or emergency service.
+        </p>
+        <dl class="facts-grid">
+          <div class="fact">
+            <dt>What</dt>
+            <dd>Proposal for a <strong>locally managed</strong> MSAR unit under Victoria’s official MSAR framework</dd>
+          </div>
+          <div class="fact">
+            <dt>Where</dt>
+            <dd><strong>Mallacoota</strong>, far East Gippsland, Victoria</dd>
+          </div>
+          <div class="fact">
+            <dt>Shared base</dt>
+            <dd>About <strong>$7&nbsp;million</strong> emergency services base shared by <strong>SES, Lifesaving, and MSAR</strong></dd>
+          </div>
+          <div class="fact">
+            <dt>MSAR assets</dt>
+            <dd>About <strong>$2&nbsp;million</strong> of MSAR assets deployed in Mallacoota, with an operating budget</dd>
+          </div>
+          <div class="fact">
+            <dt>Reform context</dt>
+            <dd><strong>2014</strong> Victorian Parliamentary Inquiry / MSAR reform report (27 pages) — issues still argued as unaddressed</dd>
+          </div>
+          <div class="fact">
+            <dt>Emergency</dt>
+            <dd>Always dial <strong>000</strong> and ask for the <strong>Water Police</strong></dd>
+          </div>
+          <div class="fact">
+            <dt>Contact</dt>
+            <dd><a href="mailto:mallacootamsar@gmail.com">mallacootamsar@gmail.com</a></dd>
+          </div>
+          <div class="fact">
+            <dt>Public list</dt>
+            <dd>Community positions by <strong>Alias</strong> only; emails private and not released — <a href="#support">add your position</a></dd>
+          </div>
+        </dl>
       </div>
     </section>
 
@@ -502,6 +681,59 @@
         </div>
       </div>
     </section>
+
+    <!-- FAQ — visible content aligned with JSON-LD FAQPage -->
+    <section class="section" id="faq" style="padding-top: 0.5rem;" aria-labelledby="faq-heading">
+      <div class="section-header">
+        <h2 id="faq-heading">Frequently asked questions</h2>
+        <p>Straight answers for locals, decision-makers, search engines, and AI tools.</p>
+      </div>
+      <div class="faq-list">
+        <details class="card faq-item" open>
+          <summary>Is MMSAR an operational marine rescue service?</summary>
+          <p>
+            <strong>No.</strong> MMSAR is a <strong>proposal only</strong> and is not an active
+            rescue service. In an emergency, dial <strong>000</strong> and ask for the
+            <strong>Water Police</strong>.
+          </p>
+        </details>
+        <details class="card faq-item">
+          <summary>What is MMSAR proposing for Mallacoota?</summary>
+          <p>
+            A community-led volunteer Marine Search and Rescue unit under the official Victorian
+            MSAR framework, <strong>managed locally rather than remotely</strong>, so public
+            assets in Mallacoota are used for local safety.
+          </p>
+        </details>
+        <details class="card faq-item">
+          <summary>What emergency facilities and assets are in Mallacoota?</summary>
+          <p>
+            A new approximately <strong>$7&nbsp;million</strong> emergency services base shared by
+            <strong>SES, Lifesaving, and MSAR</strong>. MSAR has roughly
+            <strong>$2&nbsp;million</strong> of assets deployed in Mallacoota, with a budget to
+            operate them.
+          </p>
+        </details>
+        <details class="card faq-item">
+          <summary>What does the 2014 Victorian Parliamentary Inquiry say?</summary>
+          <p>
+            The inquiry and related MSAR reform report (27 pages) identified problems with how
+            marine rescue is organised and supported in Victoria. This proposal argues those
+            issues have <strong>not been adequately addressed</strong>. Read the PDF in the
+            <a href="#inquiry" class="text-link">inquiry section</a>.
+          </p>
+        </details>
+        <details class="card faq-item">
+          <summary>How do I show my position on the public list?</summary>
+          <p>
+            Use the form under <a href="#support" class="text-link">Add your position</a>.
+            Enter an <strong>Alias</strong> for the public list, a valid unique email (private,
+            not released), your connection to the area, and where you stand — including support
+            for local management, offering to help, or that you are fine with how it is run now.
+          </p>
+        </details>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -575,6 +807,6 @@
     </div>
   </div>
 
-  <script src="main.js?v=12"></script>
+  <script src="main.js?v=13"></script>
 </body>
 </html>

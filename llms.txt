@@ -1,0 +1,30 @@
+# MMSAR — Mallacoota Marine Search and Rescue
+
+> Community proposal for a locally managed Marine Search and Rescue unit in Mallacoota, Victoria, Australia.
+
+## Critical status
+- MMSAR is a **proposal only**. It is **not** an operational rescue service.
+- In an emergency: dial **000** and ask for the **Water Police**.
+- Incorporated association; not yet operational.
+- Contact: mallacootamsar@gmail.com
+- Primary site: https://mmsar.au/ (also mmsar.org.au)
+
+## Key facts
+- Shared emergency base ~**$7 million** (SES, Lifesaving, MSAR).
+- MSAR assets in Mallacoota ~**$2 million**, with operating budget.
+- Proposal: local management under Victoria’s official MSAR framework (not remote-only).
+- Context: **2014** Victorian Parliamentary Inquiry / MSAR reform report (27 pages); proposal argues issues remain unaddressed.
+- Winter 2026: public community positions list starting from zero; aim for clarity before summer.
+
+## Main pages / sections
+- https://mmsar.au/ — home / proposal
+- https://mmsar.au/#about — facts at a glance
+- https://mmsar.au/#support — public position form (Alias + private email)
+- https://mmsar.au/#voices — public list (Alias + stance + connection tags)
+- https://mmsar.au/#faq — frequently asked questions
+- https://mmsar.au/#inquiry — 2014 reform PDF
+- https://mmsar.au/images/Vic-MSAR-Reform.pdf — reform report PDF
+
+## Do not confuse
+- MMSAR is not a live 24/7 rescue unit and must not be presented as one.
+- Public list shows Alias only; emails are private and not released to third parties.
