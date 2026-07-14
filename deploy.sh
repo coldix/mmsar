@@ -17,9 +17,8 @@ if [[ ! -f "$KEY" ]]; then
 fi
 
 echo "Deploying MMSAR → ${REMOTE}"
-# Use --chmod so Apache can read files (local macOS perms are often 700)
-rsync -av --progress --delete \
-  --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r \
+# Avoid -p (perms) — local macOS files are often 700 and break Apache
+rsync -rlDv --progress --delete \
   -e "ssh -i ${KEY} -p ${PORT} -o IdentitiesOnly=yes" \
   --exclude='.git' \
   --exclude='.github' \
@@ -35,9 +34,13 @@ rsync -av --progress --delete \
   --exclude='docs' \
   ./ "${HOST}:${REMOTE}"
 
-# Ensure docroot itself stays world-traversable
-ssh -i "${KEY}" -p "${PORT}" -o IdentitiesOnly=yes "${HOST}" \
-  "chmod 755 /home/u566466219/domains/mmsar.au/public_html"
+# Apache needs world-readable files and executable dirs
+ssh -i "${KEY}" -p "${PORT}" -o IdentitiesOnly=yes "${HOST}" bash -s <<'REMOTE'
+DOC=/home/u566466219/domains/mmsar.au/public_html
+chmod 755 "$DOC"
+find "$DOC" -type d ! -path '*/.private*' -exec chmod 755 {} \;
+find "$DOC" -type f ! -path '*/.private*' -exec chmod 644 {} \;
+REMOTE
 
 echo "Done: https://mmsar.au/"
 echo "Also check: https://mmsar.org.au/ (if it points at the same host)"

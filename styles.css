@@ -114,19 +114,19 @@ h1, h2, h3, h4 {
 /* ─── Hero ──────────────────────────────────────────────── */
 .hero {
   position: relative;
-  min-height: calc(100vh - var(--header-h));
-  min-height: calc(100dvh - var(--header-h));
+  /* Compact: no full-viewport empty sky */
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   overflow: hidden;
   background: linear-gradient(
     180deg,
     #0a1a2e 0%,
-    #0c2840 28%,
-    #0a4060 55%,
-    #0e5a78 72%,
-    #0a4a62 85%,
+    #0c2840 22%,
+    #0a4060 48%,
+    #0e5a78 68%,
+    #0a4a62 82%,
     #061820 100%
   );
 }
@@ -134,7 +134,7 @@ h1, h2, h3, h4 {
 /* Sky glow */
 .hero-sky {
   position: absolute;
-  inset: 0 0 45% 0;
+  inset: 0 0 30% 0;
   background:
     radial-gradient(ellipse 80% 50% at 70% 20%, rgba(255, 200, 120, 0.12) 0%, transparent 55%),
     radial-gradient(ellipse 60% 40% at 20% 30%, rgba(80, 160, 220, 0.1) 0%, transparent 50%),
@@ -145,7 +145,7 @@ h1, h2, h3, h4 {
 /* Soft clouds */
 .hero-clouds {
   position: absolute;
-  inset: 0 0 50% 0;
+  inset: 0 0 35% 0;
   overflow: hidden;
   pointer-events: none;
   opacity: 0.35;
@@ -157,22 +157,23 @@ h1, h2, h3, h4 {
   filter: blur(40px);
   animation: cloud-drift linear infinite;
 }
-.cloud-1 { width: 280px; height: 80px; top: 12%; left: -10%; animation-duration: 80s; }
-.cloud-2 { width: 200px; height: 60px; top: 22%; left: 40%; animation-duration: 100s; animation-delay: -20s; }
-.cloud-3 { width: 320px; height: 90px; top: 8%; left: 70%; animation-duration: 90s; animation-delay: -40s; }
+.cloud-1 { width: 280px; height: 80px; top: 8%; left: -10%; animation-duration: 80s; }
+.cloud-2 { width: 200px; height: 60px; top: 14%; left: 40%; animation-duration: 100s; animation-delay: -20s; }
+.cloud-3 { width: 320px; height: 90px; top: 4%; left: 70%; animation-duration: 90s; animation-delay: -40s; }
 
 @keyframes cloud-drift {
   0% { transform: translateX(0); }
   100% { transform: translateX(30vw); }
 }
 
-/* Ocean surface area */
+/* Ocean surface area — bottom band under text + boat */
 .hero-ocean {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 48%;
+  height: 42%;
+  min-height: 140px;
   overflow: hidden;
   pointer-events: none;
 }
@@ -252,13 +253,14 @@ h1, h2, h3, h4 {
 }
 
 /* ─── Animated boat ─────────────────────────────────────── */
+/* In-flow strip so the hero doesn't leave a huge empty top gap */
 .boat-stage {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12%;
-  height: 42%;
+  position: relative;
   z-index: 10;
+  width: 100%;
+  height: clamp(160px, 28vw, 260px);
+  margin-top: -0.25rem;
+  flex-shrink: 0;
   pointer-events: none;
 }
 
@@ -273,8 +275,8 @@ h1, h2, h3, h4 {
 .boat-bob {
   position: absolute;
   left: 50%;
-  bottom: 8%;
-  width: min(52vw, 480px);
+  bottom: 6%;
+  width: min(48vw, 380px);
   transform: translateX(-50%);
   animation: boat-bob 3.2s ease-in-out infinite;
   filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
@@ -341,11 +343,11 @@ h1, h2, h3, h4 {
   width: 100%;
   max-width: var(--max);
   margin: 0 auto;
-  padding: 2rem 1.5rem 3.5rem;
+  padding: 1.35rem 1.5rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 0.85rem;
 }
 
 .hero-badge {
@@ -366,11 +368,11 @@ h1, h2, h3, h4 {
 .hero-badge i { font-size: 0.85rem; }
 
 .hero h1 {
-  font-size: clamp(2.4rem, 6vw, 3.75rem);
+  font-size: clamp(2rem, 5vw, 3.1rem);
   font-weight: 800;
   color: #fff;
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  max-width: 14ch;
+  max-width: 16ch;
 }
 
 .hero h1 .accent {
@@ -411,7 +413,8 @@ h1, h2, h3, h4 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 /* ─── Buttons ───────────────────────────────────────────── */
@@ -942,8 +945,8 @@ body.light .media-card .caption { color: var(--text-muted); }
   .cta-grid {
     grid-template-columns: 1fr;
   }
-  .boat-bob { width: min(70vw, 380px); }
-  .boat-stage { height: 38%; bottom: 10%; }
+  .boat-bob { width: min(58vw, 320px); }
+  .boat-stage { height: clamp(140px, 32vw, 220px); }
 }
 
 @media (max-width: 640px) {
@@ -954,19 +957,20 @@ body.light .media-card .caption { color: var(--text-muted); }
   }
   .alert-bar .sep { display: none; }
   .theme-toggle span { display: none; }
-  .theme-toggle { padding: 0.6rem 0.75rem; }
+  .theme-toggle { padding: 0.6rem 0.75rem; top: calc(var(--header-h) + 0.5rem); }
   .hero-content {
-    padding: 1.5rem 1.15rem 2.5rem;
+    padding: 1rem 1.15rem 0.35rem;
     align-items: center;
     text-align: center;
+    gap: 0.7rem;
   }
-  .hero h1 { max-width: none; }
-  .hero-lead { margin-inline: auto; }
+  .hero h1 { max-width: none; font-size: clamp(1.75rem, 8vw, 2.2rem); }
+  .hero-lead { margin-inline: auto; font-size: 1rem; }
   .hero-meta { justify-content: center; }
   .hero-actions { justify-content: center; width: 100%; }
   .hero-actions .btn { flex: 1 1 auto; min-width: 140px; }
-  .boat-bob { width: min(85vw, 320px); bottom: 4%; }
-  .boat-stage { height: 36%; bottom: 6%; }
+  .boat-bob { width: min(72vw, 280px); bottom: 4%; }
+  .boat-stage { height: 150px; }
   .section { padding: 2.5rem 1.15rem; }
   .card { padding: 1.35rem; }
   .reading-card { flex-direction: column; align-items: stretch; text-align: center; }
