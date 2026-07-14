@@ -1,114 +1,228 @@
 # MMSAR — Mallacoota Marine Search and Rescue
 
-**Proposal website** for a community-led Marine Search and Rescue unit in Mallacoota, Victoria.
+**Proposal website** for a community-led Marine Search and Rescue unit in Mallacoota, Victoria, Australia.
 
 > **Not an operational service.**  
 > In an emergency, dial **000** and ask for the Water Police.
 
-Live sites:
+| | |
+|--|--|
+| **Live (preferred)** | [https://mmsar.au/](https://mmsar.au/) |
+| **Also** | [https://mmsar.org.au/](https://mmsar.org.au/) → **301** to mmsar.au |
+| **GitHub** | [github.com/coldix/mmsar](https://github.com/coldix/mmsar) |
+| **Project email** | [mallacootamsar@gmail.com](mailto:mallacootamsar@gmail.com) |
 
-- [https://mmsar.au/](https://mmsar.au/)
-- [https://mmsar.org.au/](https://mmsar.org.au/)
+---
 
-## About
+## About this proposal
 
-MMSAR is a **proposal** to establish a locally managed volunteer MSAR unit under the official Victorian framework. The association is **incorporated** but **not yet operational**. Government-funded facilities and vessels in Mallacoota create an opportunity for stronger local emergency response.
+MMSAR is a **proposed** incorporated association (not yet operational). The site argues for a **locally managed** volunteer unit under Victoria’s official MSAR framework.
 
-This site:
+Key facts on the site:
 
-- Explains the vision and context
-- Collects community survey responses and non-binding pledges
-- Links to MSAR training documents and reform background reading
-- Features an animated Naiad rescue boat on the home page
+- ~**$7 million** emergency services base shared by **SES, Lifesaving, and MSAR**
+- ~**$2 million** of MSAR assets deployed in Mallacoota, with an operating budget
+- Context from the **2014** Victorian Parliamentary Inquiry / MSAR reform report (27-page PDF)
+- Winter campaign: public list of where people stand, starting from zero, aiming for clarity before summer
+
+---
+
+## What the site does
+
+- Full-viewport **animated rescue boat** hero (CSS + WebP asset)
+- Vision copy + **Kuula 360° lake** embed
+- Public **Alias list** of community positions (all views, including “fine with how it’s run now”)
+- Signup form → **JSON store** + email to project Gmail
+- YouTube + second Kuula media, reform PDF reader
+- FAQ, SEO/schema, Open Graph share card for Facebook
+
+---
 
 ## Stack
 
 | Piece | Detail |
 |--------|--------|
-| Front end | Static HTML, CSS, JavaScript (no build step) |
-| Form backend | Google Apps Script → spreadsheet |
-| Analytics | Google Analytics (`G-JKZW0CYEBL`) |
-| Hosting | Static file host (both domains) |
+| Front end | Static HTML / CSS / JS (no build step) |
+| Form API | PHP 8 on Hostinger (`api/submit.php`, `api/list.php`) |
+| Storage | `data/submissions.json` (not web-readable) |
+| Notify | Email → **mallacootamsar@gmail.com** |
+| Analytics | Google Analytics `G-JKZW0CYEBL` |
+| Hosting | Hostinger (`mmsar.au` public_html) |
+| Domains | All www / org.au variants **301** → `https://mmsar.au/` |
 
-## Project structure
+---
+
+## Repository layout
 
 ```
 .
-├── index.html          # Main proposal page (hero + form)
-├── thank-you.html      # Optional thank-you page
-├── styles.css          # Design system + boat animation
-├── main.js             # Theme toggle + survey/pledge form
+├── index.html              # Main page (hero, vision, form, list, FAQ, SEO)
+├── thank-you.html          # No-JS form fallback target (noindex)
+├── styles.css              # Layout, boat animation, mobile, form, voices
+├── main.js                 # Theme, form submit, public list, PDF modal
+├── deploy.sh               # rsync → Hostinger via ~/.ssh/gha_hostinger
+├── .htaccess               # 301 to https://mmsar.au/ + security headers
+├── .gitignore
+├── robots.txt              # Allow site; disallow /data/ /api/
+├── sitemap.xml
+├── llms.txt                # Plain facts for AI crawlers
 ├── favicon.ico
 ├── apple-touch-icon.png
-├── robots.txt
-├── sitemap.xml
+├── api/
+│   ├── submit.php          # POST: validate, save JSON, email
+│   └── list.php            # GET: public aliases only (no emails)
+├── data/
+│   ├── .htaccess           # Deny all web access
+│   ├── README.md
+│   └── submissions.json    # Live data on server (gitignored when filled)
 └── images/
-    ├── Naiad-1.png           # Hero boat (animated)
-    ├── boat-sketch.jpg       # Secondary illustration
-    ├── boat-photo.jpg        # Archive / reference
-    └── Vic-MSAR-Reform.pdf   # Background reading
+    ├── Naiad-1.webp        # Hero boat (compressed; used on site)
+    ├── Naiad-1.png         # Source / fallback art
+    ├── og-card.jpg         # Facebook/OG 1200×630
+    ├── og-share.jpg        # Earlier OG variant
+    ├── boat-sketch.jpg
+    ├── boat-photo.jpg
+    └── Vic-MSAR-Reform.pdf # 2014 reform report
 ```
+
+**Not in git (or excluded from deploy):** `.DS_Store`, zips, live personal data in `submissions.json` when present, empty `mmsar/` folder.
+
+---
+
+## Public form & list
+
+### Fields collected
+
+| Field | Public? | Notes |
+|--------|---------|--------|
+| **Alias** | Yes | Shown on list; filtered for abuse/obscenity |
+| **Email** | No | Valid + unique; project may email; **not released** |
+| **Connection** | Yes (tags) | Live here, boat here, family/friends, interested, MSAR/emergency experience |
+| **Where I stand** | Yes | Local management / local + offer to help / fine as-is / undecided |
+| **Roles** | Yes if set | Optional if “offer to help” |
+| **Comments** | No | Emailed to project only |
+
+### Alias rules
+
+- Required for public list  
+- No `@` (not an email)  
+- Server + client reject clear abuse (e.g. `Get Fu#ked`, leetspeak/obfuscation)  
+- Public checkbox: trying to untick prompts to use an Alias instead  
+
+### Intent options (order)
+
+1. I support local management  
+2. I support local management **and offer to help**  
+3. I’m fine with how it is run now  
+4. Undecided — stay informed  
+
+### API
+
+**POST** `api/submit.php`  
+- JSON (`Content-Type: application/json`) → JSON response (used by `main.js`)  
+- Form POST (no-JS) → 303 redirect to `thank-you.html`  
+
+**GET** `api/list.php`  
+- Returns `{ result, counts, entries: [{ alias, intent, intent_label, connection_labels, roles, date }] }`  
+- **Never** returns email, IP, or comments  
+
+---
+
+## SEO & AI search
+
+| Feature | Implementation |
+|---------|----------------|
+| Canonical | `https://mmsar.au/` |
+| Open Graph / Twitter | Title, description, `images/og-card.jpg` (1200×630) |
+| JSON-LD | Organization, WebSite, WebPage, FAQPage |
+| On-page | `#about` fact box, `#faq` (aligned with schema) |
+| AI plain text | `llms.txt` |
+| Robots | Allow pages; disallow `/data/`, `/api/` |
+| Share card | Re-scrape in [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) after deploy |
+
+---
 
 ## Local preview
 
-No install required. From the project root:
+Form POST to PHP needs a server (or use live API only for full form test):
 
 ```bash
+# Static only (JS form will fail POST unless you proxy PHP)
 python3 -m http.server 8765
+# open http://127.0.0.1:8765/
 ```
 
-Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/).
+For full form behaviour, test on the live host after deploy.
 
-Or open `index.html` directly in a browser (form posts still need network access to Google Apps Script).
+---
 
 ## Deploy (Hostinger)
-
-SSH/rsync to Hostinger (same account as other Dixon sites):
 
 ```bash
 ./deploy.sh
 ```
 
-Requires `~/.ssh/gha_hostinger` (`chmod 600`).
-
 | Setting | Value |
 |---------|--------|
+| SSH key | `~/.ssh/gha_hostinger` |
 | Host | `46.202.196.151` port `65002` |
 | User | `u566466219` |
 | Path | `domains/mmsar.au/public_html/` |
 
-`deploy.sh` syncs site files and skips `.git`, README, zips, and server paths (`.well-known`, `cgi-bin`, `.private`, `docs`).
+Deploy:
 
-Hard-refresh the browser after deploy if CSS looks cached.
+- rsync site files with safe perms (644/755)  
+- Does **not** overwrite live `data/submissions.json`  
+- Skips `.git`, README, `deploy.sh`, zips  
 
-## Form backend (JSON + email)
+After CSS/JS changes, hard-refresh (cache-bust `?v=` on assets in `index.html`).
 
-Simple Hostinger PHP endpoint — no Google Sheet required.
+### Domain redirects
 
-| Piece | Path |
-|--------|------|
-| Endpoint | `api/submit.php` |
-| Storage | `data/submissions.json` (web-blocked by `.htaccess`) |
-| Notify | Email to **mallacootamsar@gmail.com** |
-| Front end | `#support` form → `main.js` posts JSON |
+`.htaccess` forces a single origin:
 
-Each submission is one object in the JSON array (`name`, `email`, `intent`, `roles`, `comments`, timestamp). The same payload is emailed to the project Gmail.
+- `http(s)://www.mmsar.au/*`  
+- `http(s)://mmsar.org.au/*`  
+- `http(s)://www.mmsar.org.au/*`  
 
-Download `data/submissions.json` via File Manager or SSH when you want a backup or to import into a spreadsheet.
+→ **301** → `https://mmsar.au/…`
 
-## Accessibility & motion
+Only **https://mmsar.au/** should return 200 for HTML.
 
-The hero boat animation is pure CSS. Users with `prefers-reduced-motion: reduce` see a static boat.
+---
+
+## Accessibility & performance
+
+- Hero boat: CSS animation; `prefers-reduced-motion` freezes motion  
+- Hero image: WebP ~64 KB (`Naiad-1.webp`), width/height set  
+- Sticky emergency bar: always visible; shortened on small screens  
+- Mobile: stacked form/stats, full-width buttons, safe-area padding  
+
+---
 
 ## Contact
 
 | Role | Contact |
 |------|---------|
-| Proposal enquiries | [mallacootamsar@gmail.com](mailto:mallacootamsar@gmail.com) |
+| Proposal / list | [mallacootamsar@gmail.com](mailto:mallacootamsar@gmail.com) |
 | Coordinator | Colin Dixon — [col@dixon.au](mailto:col@dixon.au) |
 
-## Licence / status
+---
 
-Proposal materials for community advocacy. MMSAR is subject to approval by Emergency Management Victoria (EMV) and is not yet an operational rescue service.
+## Status & licence
 
-Third-party embeds (YouTube, Kuula, Font Awesome, Google Fonts) remain under their respective terms.
+- Proposal materials for community advocacy  
+- Subject to approval by **Emergency Management Victoria (EMV)**  
+- Not an operational rescue service  
+
+Third-party: YouTube, Kuula, Font Awesome, Google Fonts — their terms apply.
+
+---
+
+## Quick checklist (maintainers)
+
+- [ ] `./deploy.sh` after content/code changes  
+- [ ] Facebook debugger re-scrape if OG image/title changes  
+- [ ] Download/backup `data/submissions.json` periodically  
+- [ ] Search Console: preferred domain `mmsar.au`, sitemap `https://mmsar.au/sitemap.xml`  
+- [ ] Never commit real submission emails to a public repo  
