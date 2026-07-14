@@ -1,6 +1,6 @@
 # MMSAR — Mallacoota Marine Search and Rescue
 
-**Proposal website** for a community-led Marine Search and Rescue unit in Mallacoota, Victoria, Australia.
+**Community consultation website** for a proposed locally managed volunteer Marine Search and Rescue unit in Mallacoota, Victoria, Australia.
 
 > **Not an operational service.**  
 > In an emergency, dial **000** and ask for the Water Police.
@@ -8,33 +8,54 @@
 | | |
 |--|--|
 | **Live (preferred)** | [https://mmsar.au/](https://mmsar.au/) |
-| **Also** | [https://mmsar.org.au/](https://mmsar.org.au/) → **301** to mmsar.au |
+| **Other hosts** | `www.mmsar.au`, `mmsar.org.au`, `www.mmsar.org.au` → **301** to `https://mmsar.au/` |
 | **GitHub** | [github.com/coldix/mmsar](https://github.com/coldix/mmsar) |
 | **Project email** | [mallacootamsar@gmail.com](mailto:mallacootamsar@gmail.com) |
+| **Coordinator** | Colin Dixon — [col@dixon.au](mailto:col@dixon.au) |
 
 ---
 
-## About this proposal
+## Purpose (current stage)
 
-MMSAR is a **proposed** incorporated association (not yet operational). The site argues for a **locally managed** volunteer unit under Victoria’s official MSAR framework.
+This is **not** a heavy public pressure campaign or recruitment drive.
 
-Key facts on the site:
+Immediate aims:
+
+1. Email former Mallacoota Coast Guard members and experienced local marine rescue contacts.
+2. Ask them to indicate support, preference for current arrangements, undecided, or possible willingness to help.
+3. Share in local Facebook groups to raise awareness and invite informed comment.
+4. Establish whether there is enough local interest, experience and concern to justify taking the proposal further.
+
+The coordinator believes local management under Victoria’s MSAR framework deserves serious consideration. The site makes that position clear while inviting **all views**, including support for present arrangements.
+
+**No decision has been made that a new unit will proceed.**
+
+---
+
+## Key facts on the site
 
 - ~**$7 million** emergency services base shared by **SES, Lifesaving, and MSAR**
-- ~**$2 million** of MSAR assets deployed in Mallacoota, with an operating budget
-- Context from the **2014** Victorian Parliamentary Inquiry / MSAR reform report (27-page PDF)
-- Winter campaign: public list of where people stand, starting from zero, aiming for clarity before summer
+- ~**$2 million** of MSAR assets in Mallacoota, with an operating budget
+- Experienced local boat operators and former volunteers
+- **2014** Victorian Parliamentary Inquiry / MSAR reform report (27-page PDF) — cited as relevant context (proposal’s view, not stated as uncontested fact)
+- Incorporated association; **not operational**
 
 ---
 
-## What the site does
+## What the site includes
 
-- Full-viewport **animated rescue boat** hero (CSS + WebP asset)
-- Vision copy + **Kuula 360° lake** embed
-- Public **Alias list** of community positions (all views, including “fine with how it’s run now”)
-- Signup form → **JSON store** + email to project Gmail
-- YouTube + second Kuula media, reform PDF reader
-- FAQ, SEO/schema, Open Graph share card for Facebook
+| Feature | Notes |
+|---------|--------|
+| Hero | Animated rescue vessel (`Naiad-1.webp`), consultation headline |
+| Disclaimer | Sticky bar + section: consultation only; dial **000** |
+| At a glance | Dense fact block for people / SEO / AI |
+| Vision | Copy + tall Kuula **360° lake** (`LKzQh`, auto-rotate, `loading="lazy"`) |
+| Public form | `#support` — Alias, email, connection, position |
+| Public list | `#voices` — Alias + position + connection tags only |
+| Media | YouTube + second Kuula (wharf) |
+| Inquiry PDF | On-page viewer + download |
+| FAQ | Consultation-focused (not replace campaign, no volunteer commitment, Alias) |
+| Thank-you | Neutral confirmation after no-JS form POST |
 
 ---
 
@@ -42,13 +63,13 @@ Key facts on the site:
 
 | Piece | Detail |
 |--------|--------|
-| Front end | Static HTML / CSS / JS (no build step) |
-| Form API | PHP 8 on Hostinger (`api/submit.php`, `api/list.php`) |
-| Storage | `data/submissions.json` (not web-readable) |
+| Front end | Static HTML / CSS / JS (no build) |
+| Form API | PHP on Hostinger — `api/submit.php`, `api/list.php` |
+| Storage | `data/submissions.json` (blocked from web by `.htaccess`) |
 | Notify | Email → **mallacootamsar@gmail.com** |
 | Analytics | Google Analytics `G-JKZW0CYEBL` |
-| Hosting | Hostinger (`mmsar.au` public_html) |
-| Domains | All www / org.au variants **301** → `https://mmsar.au/` |
+| Hosting | Hostinger `domains/mmsar.au/public_html/` |
+| Deploy | `./deploy.sh` (rsync + SSH key `~/.ssh/gha_hostinger`) |
 
 ---
 
@@ -56,173 +77,146 @@ Key facts on the site:
 
 ```
 .
-├── index.html              # Main page (hero, vision, form, list, FAQ, SEO)
-├── thank-you.html          # No-JS form fallback target (noindex)
-├── styles.css              # Layout, boat animation, mobile, form, voices
-├── main.js                 # Theme, form submit, public list, PDF modal
-├── deploy.sh               # rsync → Hostinger via ~/.ssh/gha_hostinger
-├── .htaccess               # 301 to https://mmsar.au/ + security headers
+├── index.html              # Main page
+├── thank-you.html          # Form fallback (noindex)
+├── styles.css              # Design + animation + mobile
+├── main.js                 # Theme, form, list, PDF modal
+├── deploy.sh               # Deploy to Hostinger
+├── .htaccess               # 301 → https://mmsar.au/
 ├── .gitignore
-├── robots.txt              # Allow site; disallow /data/ /api/
+├── robots.txt              # Disallow /data/ /api/
 ├── sitemap.xml
 ├── llms.txt                # Plain facts for AI crawlers
 ├── favicon.ico
 ├── apple-touch-icon.png
 ├── api/
-│   ├── submit.php          # POST: validate, save JSON, email
-│   └── list.php            # GET: public aliases only (no emails)
+│   ├── submit.php          # Validate, save, email; JSON or thank-you redirect
+│   └── list.php            # Public list (no emails)
 ├── data/
-│   ├── .htaccess           # Deny all web access
+│   ├── .htaccess           # Deny all
 │   ├── README.md
-│   └── submissions.json    # Live data on server (gitignored when filled)
+│   └── submissions.json    # Live only on server (gitignored)
 └── images/
-    ├── Naiad-1.webp        # Hero boat (compressed; used on site)
-    ├── Naiad-1.png         # Source / fallback art
-    ├── og-card.jpg         # Facebook/OG 1200×630
+    ├── Naiad-1.webp        # Hero (~64 KB, 1600×739)
+    ├── Naiad-1.png         # Source art
+    ├── og-card.jpg         # Facebook share 1200×630 (title on image)
     ├── og-share.jpg        # Earlier OG variant
     ├── boat-sketch.jpg
     ├── boat-photo.jpg
-    └── Vic-MSAR-Reform.pdf # 2014 reform report
+    └── Vic-MSAR-Reform.pdf
 ```
 
-**Not in git (or excluded from deploy):** `.DS_Store`, zips, live personal data in `submissions.json` when present, empty `mmsar/` folder.
+**Not in git:** live `submissions.json` content, zips, `.DS_Store`.
 
 ---
 
-## Public form & list
+## Public consultation form
 
-### Fields collected
-
-| Field | Public? | Notes |
-|--------|---------|--------|
-| **Alias** | Yes | Shown on list; filtered for abuse/obscenity |
-| **Email** | No | Valid + unique; project may email; **not released** |
-| **Connection** | Yes (tags) | Live here, boat here, family/friends, interested, MSAR/emergency experience |
-| **Where I stand** | Yes | Local management / local + offer to help / fine as-is / undecided |
-| **Roles** | Yes if set | Optional if “offer to help” |
-| **Comments** | No | Emailed to project only |
-
-### Alias rules
-
-- Required for public list  
-- No `@` (not an email)  
-- Server + client reject clear abuse (e.g. `Get Fu#ked`, leetspeak/obfuscation)  
-- Public checkbox: trying to untick prompts to use an Alias instead  
-
-### Intent options (order)
+### Position options (no default — user must choose)
 
 1. I support local management  
-2. I support local management **and offer to help**  
-3. I’m fine with how it is run now  
-4. Undecided — stay informed  
+2. I support local management and may be willing to help  
+3. I am satisfied with how it is run now  
+4. I am undecided and would like to stay informed  
 
-### API
+Same wording is used for form options, list badges (`intent_label` in `api/list.php`), and filter buttons.
 
-**POST** `api/submit.php`  
-- JSON (`Content-Type: application/json`) → JSON response (used by `main.js`)  
-- Form POST (no-JS) → 303 redirect to `thank-you.html`  
+### Connection (multi-select, at least one)
 
-**GET** `api/list.php`  
-- Returns `{ result, counts, entries: [{ alias, intent, intent_label, connection_labels, roles, date }] }`  
-- **Never** returns email, IP, or comments  
+- I live here  
+- I boat here  
+- Family or friends live or boat here  
+- Just following / interested  
+- Marine rescue / emergency experience  
+
+### Alias & privacy
+
+- **Public:** Alias, position, connection tags  
+- **Private:** email (valid + unique), comments  
+- Email list is **not released** to third parties  
+- Public list checkbox cannot be unticked (popup directs user to use an **Alias**)  
+- Offensive Alias filter (client + server), including common obfuscation  
+
+### API behaviour
+
+| Endpoint | Behaviour |
+|----------|-----------|
+| `POST api/submit.php` | JSON from `main.js` → JSON result; bare form POST → 303 `thank-you.html` |
+| `GET api/list.php` | `alias`, `intent`, `intent_label`, `connection` / `connection_labels`, `roles`, `date` only |
 
 ---
 
-## SEO & AI search
+## SEO, Open Graph, domains
 
-| Feature | Implementation |
-|---------|----------------|
+| Item | Implementation |
+|------|----------------|
 | Canonical | `https://mmsar.au/` |
-| Open Graph / Twitter | Title, description, `images/og-card.jpg` (1200×630) |
+| OG / Twitter title | *Should Mallacoota marine rescue be managed locally?* |
+| OG description | Consultation tone; all views welcome |
+| OG image | `https://mmsar.au/images/og-card.jpg?v=2` (question text **on** the image) |
 | JSON-LD | Organization, WebSite, WebPage, FAQPage |
-| On-page | `#about` fact box, `#faq` (aligned with schema) |
-| AI plain text | `llms.txt` |
-| Robots | Allow pages; disallow `/data/`, `/api/` |
-| Share card | Re-scrape in [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) after deploy |
+| 301s | `.htaccess` — all other hosts/schemes → apex HTTPS |
+| Mobile banner | Condensed one-line on small screens; **000** always visible |
+
+### Facebook (first share)
+
+Site has not been widely shared yet. Before the first post, optional preview:
+
+1. [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/)  
+2. URL: `https://mmsar.au/`  
+3. Scrape once and confirm card title + image  
 
 ---
 
-## Local preview
-
-Form POST to PHP needs a server (or use live API only for full form test):
+## Local preview & deploy
 
 ```bash
-# Static only (JS form will fail POST unless you proxy PHP)
+# Static preview
 python3 -m http.server 8765
-# open http://127.0.0.1:8765/
-```
 
-For full form behaviour, test on the live host after deploy.
-
----
-
-## Deploy (Hostinger)
-
-```bash
+# Production deploy
 ./deploy.sh
 ```
 
-| Setting | Value |
-|---------|--------|
-| SSH key | `~/.ssh/gha_hostinger` |
+| SSH | Value |
+|-----|--------|
+| Key | `~/.ssh/gha_hostinger` |
 | Host | `46.202.196.151` port `65002` |
 | User | `u566466219` |
 | Path | `domains/mmsar.au/public_html/` |
 
-Deploy:
-
-- rsync site files with safe perms (644/755)  
-- Does **not** overwrite live `data/submissions.json`  
-- Skips `.git`, README, `deploy.sh`, zips  
-
-After CSS/JS changes, hard-refresh (cache-bust `?v=` on assets in `index.html`).
-
-### Domain redirects
-
-`.htaccess` forces a single origin:
-
-- `http(s)://www.mmsar.au/*`  
-- `http(s)://mmsar.org.au/*`  
-- `http(s)://www.mmsar.org.au/*`  
-
-→ **301** → `https://mmsar.au/…`
-
-Only **https://mmsar.au/** should return 200 for HTML.
+Deploy does **not** overwrite live `data/submissions.json`. Bump `?v=` on CSS/JS/assets in `index.html` when those files change.
 
 ---
 
 ## Accessibility & performance
 
-- Hero boat: CSS animation; `prefers-reduced-motion` freezes motion  
-- Hero image: WebP ~64 KB (`Naiad-1.webp`), width/height set  
-- Sticky emergency bar: always visible; shortened on small screens  
-- Mobile: stacked form/stats, full-width buttons, safe-area padding  
+- Boat animation respects `prefers-reduced-motion`  
+- Hero WebP + width/height attributes  
+- Below-fold Kuula / YouTube use `loading="lazy"`  
+- Vision 360: auto-rotate on, tall frame fill  
 
 ---
 
-## Contact
+## Status
 
-| Role | Contact |
-|------|---------|
-| Proposal / list | [mallacootamsar@gmail.com](mailto:mallacootamsar@gmail.com) |
-| Coordinator | Colin Dixon — [col@dixon.au](mailto:col@dixon.au) |
-
----
-
-## Status & licence
-
-- Proposal materials for community advocacy  
-- Subject to approval by **Emergency Management Victoria (EMV)**  
+- Proposal materials for community consultation  
 - Not an operational rescue service  
+- Future unit (if any) would depend on local interest and the Victorian MSAR framework / relevant approvals  
 
 Third-party: YouTube, Kuula, Font Awesome, Google Fonts — their terms apply.
 
 ---
 
-## Quick checklist (maintainers)
+## End-of-day maintainer checklist
 
-- [ ] `./deploy.sh` after content/code changes  
-- [ ] Facebook debugger re-scrape if OG image/title changes  
-- [ ] Download/backup `data/submissions.json` periodically  
-- [ ] Search Console: preferred domain `mmsar.au`, sitemap `https://mmsar.au/sitemap.xml`  
-- [ ] Never commit real submission emails to a public repo  
+- [x] Consultation wording live (not campaign tone)  
+- [x] Meta / OG / `og-card.jpg` aligned with title question  
+- [x] Position labels consistent (form · badges · filters)  
+- [x] Alias public list + privacy + abuse filter  
+- [x] 301 domain consolidation  
+- [x] Hero WebP, form POST, mobile 000 banner  
+- [x] README + GitHub `main` updated  
+- [ ] First Facebook share / optional debugger scrape when posting  
+- [ ] Periodic backup of server `data/submissions.json`  
+- [ ] Search Console: property + sitemap `https://mmsar.au/sitemap.xml` (when ready)  
