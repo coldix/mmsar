@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You — MMSAR</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --red: #c8102e;
+      --cyan: #5ec8e8;
+      --text: #eef4f8;
+      --muted: #9bb4c4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 80% 50% at 70% 15%, rgba(94, 200, 232, 0.12), transparent 50%),
+        linear-gradient(165deg, #061018 0%, #0a1628 45%, #0d2137 100%);
+      text-align: center;
+    }
+    .card {
+      max-width: 440px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      background: rgba(12, 28, 48, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+    }
+    .brand {
+      font-family: "Outfit", system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: "Outfit", system-ui, sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #7dffb0;
+      margin-bottom: 1rem;
+    }
+    p {
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 0.85rem;
+    }
+    a {
+      color: var(--cyan);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    a:hover { color: #fff; }
+    .btn {
+      display: inline-flex;
+      margin-top: 1.25rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff !important;
+      font-weight: 700;
+      font-family: "Outfit", system-ui, sans-serif;
+      box-shadow: 0 6px 20px rgba(200, 16, 46, 0.4);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn:hover {
+      background: #e01838;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">MMSAR</div>
+    <h1>Thank You!</h1>
+    <p>Your submission has been recorded. Your support is vital for our proposal.</p>
+    <p>Please consider sharing the website with a friend:</p>
+    <p><a href="https://mmsar.au/">https://mmsar.au/</a></p>
+    <a class="btn" href="https://mmsar.au/">Back to proposal</a>
+  </div>
+</body>
+</html>
