@@ -9,3 +9,6 @@ mmsar/
 *~
 .env
 .env.*
+images/_preview*
+images/*.original.*
+images/*original*

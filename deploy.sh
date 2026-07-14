@@ -32,6 +32,9 @@ rsync -rlDv --progress --delete \
   --exclude='cgi-bin' \
   --exclude='.private' \
   --exclude='docs' \
+  --exclude='images/_preview*' \
+  --exclude='images/*.original.*' \
+  --exclude='images/*original*' \
   ./ "${HOST}:${REMOTE}"
 
 # Apache needs world-readable files and executable dirs
